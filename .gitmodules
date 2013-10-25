@@ -1,0 +1,6 @@
+[submodule "tutorial/js/sc-js"]
+	path = tutorial/js/sc-js
+	url = https://github.com/sergio-castro/jsfiles.git
+[submodule "tutorial/styles/sc-css"]
+	path = tutorial/styles/sc-css
+	url = https://github.com/sergio-castro/cssfiles.git
