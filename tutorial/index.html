@@ -4,18 +4,23 @@
 <meta charset="UTF-8">
 <title>JGum User Guide</title>
 
-	<link rel="stylesheet" href="styles/manual.css" />
-
-	<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
-    <script type="text/javascript" src="js/jquery.tableofcontents.min.js"></script>
+	<link rel="stylesheet" href="styles/sc-css/tutorial.css" />
+    
+	<script type="text/javascript" src="js/jquery-1.10.2.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/jquery.tableofcontents.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="js/ace-builds/src-noconflict/ace.js" charset="utf-8"></script>
+<script type="text/javascript" src="js/sc-js/jquery.sc.tutorial.js" charset="utf-8"></script>
     
     <script type="text/javascript">//<![CDATA[
 (function ($) {
 	$(document).ready(function(){
-	        $('#table_of_content_entries').tableOfContents('#content', {startLevel:2, depth: 3});
+	    $('#table_of_content_entries').tableOfContents('#content', {startLevel:2, depth: 3});
+		$.prettifyCodeSnippets("eclipse");
 	    })
 })(jQuery);
 //]]></script>
+
+
 
 
 </head>
@@ -33,11 +38,36 @@
 </div>
 
 <div id='content'>
-  <h1>Title</h1>
-  <h2>Overview</h2>
-  <h3>Example</h3>   
+
+  <h2>Motivation</h2> 
+  
+  Certain Java projects that make intensive usage of reflection may benefit from a simple mechanism for attaching and retrieving properties from hierarchical meta-objects, 
+  such as classes and packages.
+  
+  This is particularly true when custom properties in a graph of (meta-) objects should be inspected and manipulated according to the hierarchical relations such objects have between each other.
+  
+  Instead of relying on an ad-hoc implementation supporting this task, GJum provides a customizable framework for dealing with common routines related to the management of such properties.
+    
+  <h2>The GJum context</h2>
+  
+  JGum helps to maintain a graph of meta-objects associated with arbitrary properties. Nodes in this graph and their properties are associated with a context (the JGum context).
+  A new JGum context can be instantiated as follows:
+
+  <pre data-editor="javascript" >
+int i = 0;
+int j = 1;</pre>
+
+the example ...
+
+  <h3>Example</h3>
+  
+  <h2>Contact</h2>
+  
+  Constructive feedback, questions or wish list can be sent to uclouvain.be@sergio.castro (inversing the order).
+  If you just want to say hello it is also welcome! :-)
   
 </div>
+
 
 </body>
 </html>
