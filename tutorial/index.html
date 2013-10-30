@@ -9,17 +9,18 @@
 	<script type="text/javascript" src="js/jquery-1.10.2.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/jquery.tableofcontents.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/ace-builds/src-noconflict/ace.js" charset="utf-8"></script>
-<script type="text/javascript" src="js/sc-js/jquery.sc.tutorial.js" charset="utf-8"></script>
+	<script type="text/javascript" src="js/sc-js/jquery.sc.tutorial.js" charset="utf-8"></script>
     
     <script type="text/javascript">//<![CDATA[
 (function ($) {
 	$(document).ready(function(){
 	    $('#table_of_content_entries').tableOfContents('#content', {startLevel:2, depth: 3});
 		$.prettifyCodeSnippets("eclipse");
+		//$.prettifyCodeSnippets("solarized_light");
+		$.configureFootnotes();
 	    })
 })(jQuery);
 //]]></script>
-
 
 
 
@@ -32,45 +33,163 @@
 
 <h1>JGum User Guide</h1>
 
+<!--
 WORK IN PROGRESS....
+-->
 
-<p>&nbsp;</p>
 <div id="table_of_content">
-  <h4>Contents</h4>
-  <ol id='table_of_content_entries'></ol>
+  <strong>Contents</strong>
+  <ol id="table_of_content_entries"></ol>
 </div>
 
-<div id='content'>
 
-  <h2>Motivation</h2> 
+<div id="content">
+
+  <h2>Overview</h2> 
   
-  Certain Java projects that make intensive usage of reflection may benefit from a simple mechanism for attaching and retrieving properties from hierarchical meta-objects, 
+  The notion of categories plays a major role in computer programming <sup> <a rel="footnote" href="#fn:classesvsprototypes">1</a> </sup>.
+  Categorization mechanisms are often implicit in a programming language (e.g., classes and packages).
+  However, for statically-typed languages it is often not trivial (or impossible at all) to modify at runtime the properties of existing categories, or creating new categories on the fly.
+  Furthermore, a programmer may intend to create or modify the properties of categories in a certain well-scoped context, isolating category properties, or the categories themselves, from the rest of the application.
+  
+  <p/>
+  
+  JGum is a Java library providing support for defining categories and their properties in a particular context.
+  With JGum, a programmer can define and manage custom hierarchies of categories, or easily generate categories based on existing Java categorization mechanisms, such as classes and packages.
+  
+
+  <h2>Having Fun with Categories (or a short introduction to <a href="http://logging.apache.org/log4j/1.2/" title="Apache log4j">log4j</a>)</h2>
+  
+  This section illustrates typical usage of custom categories in every day programming by means of reviewing common logging practices using a well known Java library.
+  
+  <h3>Named hierarchies</h3>
+
+  Popular logging libraries such as <a href="http://logging.apache.org/log4j/1.2/" title="Apache log4j">log4j</a> allow fine grained control on which kind of logging message (e.g., warning or error) should be processed at runtime.
+  This control is enabled since programmers can easily categorize a <q>logging space</q> <sup> <a rel="footnote" href="#fn:apache-manual">2</a> </sup> according to some developer-chosen criteria.
+  
+  Loggers are organized hierarchically following a naming rule. For example, a logger named <code>org</code> is the parent of a logger named <code>org.jgum</code>, and the ancestor of a logger named <code>org.jgum.JGum</code>.
+  If a logger property (e.g., a logging <code>level</code>) is not defined for a given logger, it should be resolved according to the corresponding property value of its parent.
+  
+  <p/>
+  
+  Loggers are typically defined by means of configuration files. The following fragment of a log4j configuration file configures a logger named <code>org.jgum</code> with the level <code>WARN</code>.
+  
+    <p><pre data-editor="properties" data-show-gutter="true">
+# Set the logger level to warning for the org.jgum package
+log4j.logger.org.jgum=WARN</pre></p>
+  
+  Although loggers can have any name, a common convention is to name them according to the fully qualified name of the class where they are used.
+  For example, a logger named <code>"org.jgum.JGum"</code> can be instantiated with:
+ 
+   <p><pre data-editor="properties" data-show-gutter="true">Logger jgumLogger = Logger.getLogger(org.jgum.JGum.class); //instantiates a logger named "org.jgum.JGum"</pre></p> 
+   
+   Since this logger is a descendant from the <code>"org.jgum"</code> logger defined in the configuration file, it inherits from its parent the <code>level</code> property, set to <code>WARN</code>. 
+	This is illustrated by the figure below.
+    
+
+  <div class="divImg">
+    <img src="img/log4j_packages.png" alt="Named category properties." style="padding-bottom:0.5em;" />
+    <div>Fig 1. - Named category properties.</div>
+  </div>
+
+
+   For a detailed explanation on the semantic meaning of logger properties please refer to the <a href="http://logging.apache.org/log4j/1.2/manual.html">log4j manual</a>.
+	
+   <p/>
+   This section has illustrated how a popular logging library uses name hierarchies to create a categorization of loggers.
+   JGum factorizes out this categorization pattern as a general mechanism to associate properties to packages, classes (by means of their fully qualified name) or any artifact following a similar hierarchical naming convention.
+   The following section motivates another type of categories based on existing type hierarchies of the language.
+    
+  <h3>Type hierarchies</h3>
+  
+  Since generating readable messages is a core objective of logging, log4j allows to associate custom renderers to certain classes.
+  The renderers are responsible to convert a given object to a convenient string representation for logging.
+  
+  <p/>
+  
+  Quoting the <a href="http://logging.apache.org/log4j/1.2/manual.html">log4j manual</a>:
+  <q>Object rendering follows the class hierarchy. For example, assuming oranges are fruits, if you register a FruitRenderer, all fruits including oranges will be rendered by the FruitRenderer, unless of course you registered an orange specific OrangeRenderer </q>.
+
+  Then, we would like to associate a property (a renderer) to the category identified by the <code>Fruit</code> class. However, in this case we require a different categorization heuristic: instead of categorizing a class according to its fully qualified name, we want to do it according to its location in a class hierarchy. This categorization is illustrated by the figure below.
+
+
+  <div class="divImg">
+    <img src="img/log4j_classes.png" alt="Type category properties." style="padding-bottom:0.5em;" />
+    <div>Fig 2. - Type category properties.</div>
+  </div>
+
+
+  Therefore, this categorization is based on an existing categorization already provided by the language (a hierarchy of classes). 
+  
+  <p/>
+  This section has showed how log4j relies on the existing type hierarchy of the language to create a categorization of renderers.
+  As in the previous categorization based on name hierarchies, JGum factorizes out this categorization pattern as a general mechanism to associate properties to classes and interfaces based on their position on a class hierarchy.
+  As before, JGum allows to add and manipulate new properties (i.e., not existing in the original type categorization provided by the language) in the scope of a certain context.
+  
+  
+  <h2>JGum Objective</h2> 
+  
+  Developing ad-hoc solutions for maintaining context depending values is complex and time consuming [Contextual Values. Eric...].
+  Instead of relying on an ad-hoc implementation supporting this task, GJum provides a simple customizable framework for dealing with common routines related to the management of properties associated with classes and packages.
+    
+    These properties are associated with <q>contextual values</q>. Therefore
+    
+    The values of these properties are context dependant. These <q>contextual values</q> [Contextual Values. Éric Tanter.]  depend on the context in which they are looked at and modified.
+
+
+  that make intensive usage of reflection may benefit from a simple mechanism for attaching and retrieving properties from hierarchical meta-objects, 
   such as classes and packages.
   
   This is particularly true when custom properties in a graph of (meta-) objects should be inspected and manipulated according to the hierarchical relations such objects have between each other.
-  
-  Instead of relying on an ad-hoc implementation supporting this task, GJum provides a customizable framework for dealing with common routines related to the management of such properties.
-    
-  <h2>The GJum context</h2>
+
+
+  <h2>The JGum Context</h2>
   
   JGum helps to maintain a graph of meta-objects associated with arbitrary properties. Nodes in this graph and their properties are associated with a context (the JGum context).
   A new JGum context can be instantiated as follows:
 
-  <pre data-editor="java" >
-int i = 0;
-int j = 1;</pre>
+  <p><pre data-editor="java" data-show-gutter="true">
+JGum jgum = new JGum();</pre></p>
 
-the example ...
 
-  <h3>Example</h3>
+  <h2>Limitations</h2>
   
+  
+  <h2>Future Work</h2>
+  
+
+  <h2>Conclusions</h2>
+
+  <h2>License</h2>
+
+  JGum is open source, distributed under the terms of this <a href="https://github.com/jgum/jgum/blob/master/LICENSE.txt" title="License">license</a>.
+
   <h2>Contact</h2>
   
-  Constructive feedback, questions or wish list can be sent to uclouvain.be@sergio.castro (inversing the order).
-  If you just want to say hello it is also welcome! :-)
+  Constructive feedback, questions or a wish list can be sent to <em>uclouvain.be@sergio.castro</em> (inversing the order).
+  Or just write me a line if you want to say hello ! :-)
   
-</div>
+</div> <!-- end of content -->
 
+    
+    
+<div id="footnotes">
+  <hr />
+  
+  <h3>Footnotes</h3>
+  
+  <ol>
+  
+  <li id="fn:classesvsprototypes">
+  	Classes vs. Prototypes - Some Philosophical and Historical Observations. Antero Taivalsaari. Journal of Object-Oriented Programming. 1996.
+  </li>
+  
+  <li id="fn:apache-manual">
+  	<a href="http://logging.apache.org/log4j/1.2/manual.html">Short introduction to log4j.</a>  Ceki Gülcü, March 2002.
+  </li>
+  
+  </ol>
+</div> <!-- end of footnotes -->
 
 </body>
 </html>
