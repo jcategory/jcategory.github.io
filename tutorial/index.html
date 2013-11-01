@@ -5,21 +5,25 @@
 <title>JGum User Guide</title>
 
 	<link rel="stylesheet" href="styles/sc-css/tutorial.css" />
-    
+        
 	<script type="text/javascript" src="js/jquery-1.10.2.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/jquery.tableofcontents.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="js/ace-builds/src-noconflict/ace.js" charset="utf-8"></script>
 	<script type="text/javascript" src="js/sc-js/jquery.sc.tutorial.js" charset="utf-8"></script>
     
     <script type="text/javascript">//<![CDATA[
-(function ($) {
-	$(document).ready(function(){
-	    $('#table_of_content_entries').tableOfContents('#content', {startLevel:2, depth: 3});
-		$.prettifyCodeSnippets("eclipse");
-		//$.prettifyCodeSnippets("solarized_light");
-		$.configureFootnotes();
-	    })
-})(jQuery);
+  (function ($) {
+    $(document).ready(function(){
+		
+      $('#table_of_content_entries').tableOfContents('#content', {startLevel:2, depth: 3});
+      $.prettifyCodeSnippets("eclipse");
+      //$.prettifyCodeSnippets("solarized_light");
+      $.configureFootnotes();
+
+    })
+
+  })(jQuery);
+
 //]]></script>
 
 
@@ -30,6 +34,8 @@
 
 
 <body>
+
+
 
 <h1>JGum User Guide</h1>
 
@@ -43,29 +49,32 @@ WORK IN PROGRESS....
 </div>
 
 
+
+
 <div id="content">
 
   <h2>Overview</h2> 
   
-  The notion of categories plays a major role in computer programming <sup> <a rel="footnote" href="#fn:classesvsprototypes">1</a> </sup>.
-  Categorization mechanisms are often implicit in a programming language (e.g., classes and packages).
-  However, for statically-typed languages it is often not trivial (or impossible at all) to modify at runtime the properties of existing categories, or creating new categories on the fly.
+  Since ancient times, conceptual grouping is a natural human way to create abstract models of the world <sup> <a rel="footnote" href="#fn:aristo">1</a> </sup>.
+  In computer science, the notion of categories plays a major role in computer programming <sup> <a rel="footnote" href="#fn:classesvsprototypes">2</a> </sup>.
+  Particularly, different categorization mechanisms are often implicit in most programming languages (e.g., classes and packages).
+  However, for statically-typed languages it is often not trivial (or not possible at all) to modify at runtime the properties of existing categories, or creating new categories on the fly.
   Furthermore, a programmer may intend to create or modify the properties of categories in a certain well-scoped context, isolating category properties, or the categories themselves, from the rest of the application.
   
   <p/>
   
   JGum is a Java library providing support for defining categories and their properties in a particular context.
-  With JGum, a programmer can define and manage custom hierarchies of categories, or easily generate categories based on existing Java categorization mechanisms, such as classes and packages.
+  With JGum, a programmer can define and manage custom hierarchies of categories, or easily create categories based on existing Java categorization mechanisms, such as classes and packages.
   
 
   <h2>Having Fun with Categories (or a short introduction to <a href="http://logging.apache.org/log4j/1.2/" title="Apache log4j">log4j</a>)</h2>
   
   This section illustrates typical usage of custom categories in every day programming by means of reviewing common logging practices using a well known Java library.
   
-  <h3>Named hierarchies</h3>
+  <h3>Named Hierarchies</h3>
 
   Popular logging libraries such as <a href="http://logging.apache.org/log4j/1.2/" title="Apache log4j">log4j</a> allow fine grained control on which kind of logging message (e.g., warning or error) should be processed at runtime.
-  This control is enabled since programmers can easily categorize a <q>logging space</q> <sup> <a rel="footnote" href="#fn:apache-manual">2</a> </sup> according to some developer-chosen criteria.
+  This control is enabled since programmers can easily categorize a <q>logging space</q> <sup> <a rel="footnote" href="#fn:apache-manual">3</a> </sup> according to some developer-chosen criteria.
   
   Loggers are organized hierarchically following a naming rule. For example, a logger named <code>org</code> is the parent of a logger named <code>org.jgum</code>, and the ancestor of a logger named <code>org.jgum.JGum</code>.
   If a logger property (e.g., a logging <code>level</code>) is not defined for a given logger, it should be resolved according to the corresponding property value of its parent.
@@ -97,10 +106,12 @@ log4j.logger.org.jgum=WARN</pre></p>
 	
    <p/>
    This section has illustrated how a popular logging library uses name hierarchies to create a categorization of loggers.
-   JGum factorizes out this categorization pattern as a general mechanism to associate properties to packages, classes (by means of their fully qualified name) or any artifact following a similar hierarchical naming convention.
+   Named hierarchies are a well known powerful categorization pattern and, as we will se soon, JGum provides high level support for dealing with this kind of categorization.
+   
+  
    The following section motivates another type of categories based on existing type hierarchies of the language.
     
-  <h3>Type hierarchies</h3>
+  <h3>Type Hierarchies</h3>
   
   Since generating readable messages is a core objective of logging, log4j allows to associate custom renderers to certain classes.
   The renderers are responsible to convert a given object to a convenient string representation for logging.
@@ -108,7 +119,7 @@ log4j.logger.org.jgum=WARN</pre></p>
   <p/>
   
   Quoting the <a href="http://logging.apache.org/log4j/1.2/manual.html">log4j manual</a>:
-  <q>Object rendering follows the class hierarchy. For example, assuming oranges are fruits, if you register a FruitRenderer, all fruits including oranges will be rendered by the FruitRenderer, unless of course you registered an orange specific OrangeRenderer </q>.
+  <q>Object rendering follows the class hierarchy. For example, assuming oranges are fruits, if you register a <code>FruitRenderer</code>, all fruits including oranges will be rendered by the <code>FruitRenderer</code>, unless of course you registered an orange specific OrangeRenderer </q>.
 
   Then, we would like to associate a property (a renderer) to the category identified by the <code>Fruit</code> class. However, in this case we require a different categorization heuristic: instead of categorizing a class according to its fully qualified name, we want to do it according to its location in a class hierarchy. This categorization is illustrated by the figure below.
 
@@ -127,38 +138,70 @@ log4j.logger.org.jgum=WARN</pre></p>
   As before, JGum allows to add and manipulate new properties (i.e., not existing in the original type categorization provided by the language) in the scope of a certain context.
   
   
-  <h2>JGum Objective</h2> 
   
-  Developing ad-hoc solutions for maintaining context depending values is complex and time consuming [Contextual Values. Eric...].
-  Instead of relying on an ad-hoc implementation supporting this task, GJum provides a simple customizable framework for dealing with common routines related to the management of properties associated with classes and packages.
-    
-    These properties are associated with <q>contextual values</q>. Therefore
-    
-    The values of these properties are context dependant. These <q>contextual values</q> [Contextual Values. Éric Tanter.]  depend on the context in which they are looked at and modified.
-
-
-  that make intensive usage of reflection may benefit from a simple mechanism for attaching and retrieving properties from hierarchical meta-objects, 
-  such as classes and packages.
-  
-  This is particularly true when custom properties in a graph of (meta-) objects should be inspected and manipulated according to the hierarchical relations such objects have between each other.
-
-
   <h2>The JGum Context</h2>
   
-  JGum helps to maintain a graph of meta-objects associated with arbitrary properties. Nodes in this graph and their properties are associated with a context (the JGum context).
+  JGum allows to create and maintain categorizations associated with a context.
   A new JGum context can be instantiated as follows:
 
   <p><pre data-editor="java" data-show-gutter="true">
 JGum jgum = new JGum();</pre></p>
 
+  This context allows to register new categorizations and retrieve them later by name, like in the example below:
 
-  <h2>Limitations</h2>
-  
-  
-  <h2>Future Work</h2>
-  
+    <p><pre data-editor="java" data-show-gutter="true">
+Categorization&lt;CategoryClass&gt; myCategorization = ...;
+jgum.register("my-categorization", myCategorization); //registering a categorization under the identifier "my-categorization"
+jgum.getCategorization("my-categorization"); //retrieving the categorization identified by "my-categorization"</pre></p>
 
+  <p>The next section overviews how to create </p>
+
+  <h2>JGum Categories</h2> 
+  
+  The notion of category is a core aspect of the JGum implementation.
+  A JGum category is defined by a group of properties shared by the objects belonging to such category.
+  Categories can also be defined in terms of other categories, in which case they inherit the properties of their ancestor categories.
+  Therefore, JGum categories defines parents-children relationships with other categories.
+  Finally, JGum categories may be associated with a label or identifier. 
+  
+  In addition to offer a framework for creating and maintaining custom hierarchical categories, JGum provides special classes and routines for dealing with common categorization mechanisms.
+  The rest of this section overviews now named and type categorizations are supported by JGum.
+
+
+  <h3>Named categorizations</h3>
+
+JGum abstract it as a general mechanism to associate properties to packages, classes (by means of their fully qualified name) or any artifact following a similar hierarchical naming convention.
+
+  <h3>Type categorizations</h3>
+
+
+
+
+  <h2>Miscelaneous Features</h2>
+
+  <h3>Iterating on property values in a categorization</h3>
+  
+  <h3>Category creation listeners</h3>
+
+  <h2>Limitations and Future Work</h2>
+  
+  <p>
+  JGum type categories currently do not take into account existing properties (attributes and methods) of the wrapped classes that define a type categorization.
+  Instead, existing classes are just considered category identifiers.
+  This is because the use cases that motivated the implementation of JGum did not require such features. However, this may change on the future.
+  </p>
+  
+  <p>
+  A potential performance issue may occur in scenarios with many categories deep in a hierarchy, with few of those categories actually containing properties.
+  For single inheritance hierarchies, this may be easily solved with categories containing references not only to its parent category,
+  but to the next ancestor actually containing a property. This will make the query of properties more efficient despite a small overhead in the addition of new properties.
+  However, this algorithm does not seem trivial to implement in multi-inheritance hierarchies, taking into consideration the different linearization strategies supported by JGum.
+  
+  </p>
+  
   <h2>Conclusions</h2>
+
+  
 
   <h2>License</h2>
 
@@ -166,7 +209,7 @@ JGum jgum = new JGum();</pre></p>
 
   <h2>Contact</h2>
   
-  Constructive feedback, questions or a wish list can be sent to <em>uclouvain.be@sergio.castro</em> (inversing the order).
+  Constructive feedback and criticism, questions or a wish list can be sent to <em>[uclouvain.be (that symbol for emails) sergio.castro]</em> (inversing the order).
   Or just write me a line if you want to say hello ! :-)
   
 </div> <!-- end of content -->
@@ -179,6 +222,10 @@ JGum jgum = new JGum();</pre></p>
   <h3>Footnotes</h3>
   
   <ol>
+  
+  <li id="fn:aristo">
+  	The complete works of Aristotle. Barnes, J. (ed). Volume 1. (the revised Oxford translation), Princeton University Press. 1984.
+  </li>
   
   <li id="fn:classesvsprototypes">
   	Classes vs. Prototypes - Some Philosophical and Historical Observations. Antero Taivalsaari. Journal of Object-Oriented Programming. 1996.
