@@ -1,4 +1,5 @@
 org.jgum
-org.jgum.classmodel
-org.jgum.graph
-org.jgum.packagemodel
+org.jgum.category
+org.jgum.category.named
+org.jgum.category.type
+org.jgum.traversal
