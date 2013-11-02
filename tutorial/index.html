@@ -81,7 +81,7 @@ WORK IN PROGRESS....
   
   This section illustrates typical usage of custom categories in every day programming by means of reviewing common logging practices using a well known Java library.
   
-  <h3>Named Hierarchies</h3>
+  <h3 id="log4j-named-hierarchies">Named Hierarchies</h3>
 
   Popular logging libraries such as <a href="http://logging.apache.org/log4j/1.2/" title="Apache log4j">log4j</a> allow fine grained control on which kind of logging message (e.g., warning or error) should be processed at runtime.
   This control is enabled since programmers can easily categorize a <q>logging space</q> <sup> <a rel="footnote" href="#fn:apache-manual">3</a> </sup> according to some developer-chosen criteria.
@@ -108,23 +108,27 @@ log4j.logger.org.jgum=WARN</pre></p>
 
   <div class="divImg">
     <img src="img/log4j_packages.png" alt="Named category properties." style="padding-bottom:0.5em;" />
-    <div>Fig 1. - Named category properties.</div>
+    <div id="imglabel:log4j_named_properties" >Fig 1. - Named category properties.</div>
   </div>
 
-
+  <p>
+  Note that although it is not showed in the figure, the actual implementation of log4j defines <code>level</code> and other properties with default values in the root category.
   For a detailed explanation on the semantic meaning of logger properties please refer to the <a href="http://logging.apache.org/log4j/1.2/manual.html">log4j manual</a>.
-	
-  <p/>
-  This section has illustrated how a popular logging library uses name hierarchies to create a categorization of loggers.
+  </p>
+  
+  <p>
+  This section has illustrated how a popular logging library makes use of named hierarchies to create a categorization of loggers.
   The core idea of a name based categorization is to infer hierarchical relationships between labeled categories based on a given naming convention.
   As we will se soon, JGum provides high level support for dealing with this categorization pattern.
+  </p>
    
+  <p>
   The following section motivates another kind of categorization based on the existing type hierarchies of a programming language.
-    
+  </p>
     
   <h3>Type Hierarchies</h3>
   
-  Back to our logging example, this section describes how log4j render objects in logging messages.
+  Back to our logging example, this section illustrates how log4j render objects in logging messages.
   Since generating readable messages is a core objective of logging, log4j allows to associate custom renderers to certain classes.
   The renderers are responsible to convert a given object to a convenient string representation for logging.
   
@@ -133,7 +137,7 @@ log4j.logger.org.jgum=WARN</pre></p>
   Quoting the <a href="http://logging.apache.org/log4j/1.2/manual.html">log4j manual</a>:
   <q>Object rendering follows the class hierarchy. For example, assuming oranges are fruits, if you register a <code>FruitRenderer</code>, all fruits including oranges will be rendered by the <code>FruitRenderer</code>, unless of course you registered an orange specific OrangeRenderer </q>.
 
-  Then, we would like to associate a property (a renderer) to the category identified by the <code>Fruit</code> class. However, in this case we require a different categorization heuristic: instead of categorizing a class according to its fully qualified name, we want to do it according to its location in a class hierarchy. This categorization is illustrated by the figure below.
+  Then, we would like to associate a property (a renderer) to the category identified by the <code>Fruit</code> class. However, in this case we require a different categorization heuristic: instead of categorizing a class according to its fully qualified name as before, we want to do it according to its location in a class hierarchy. This categorization is illustrated by the figure below.
 
 
   <div class="divImg">
@@ -182,28 +186,55 @@ jgum.getCategorization("my-categorization"); //retrieving the categorization ide
   
   <p>
   In addition to offer a framework for creating and maintaining custom hierarchies of categories, JGum provides special classes and routines for dealing with two common categorization mechanisms.
-  The rest of this section overviews tje JGum support for named and type categorizations.
+  The rest of this section overviews the JGum support for named and type categorizations.
   </p>
   
   
   <h3>Named categorizations</h3>
 
-
-  As seen 
-  Named categories are a well known powerful categorization mechanism and, a
+  <p>
+  JGum allows to define named categorizations that structure their hierarchy according to the same naming convention showed in our <a rel="footnote" href="#log4j-named-hierarchies">log4j example</a>.
+  This categorization approach can be used to associate properties to packages, classes (by means of their fully qualified name) or any artifact following a similar hierarchical naming convention.
+  </p>
   
-JGum abstract it as a general mechanism to associate properties to packages, classes (by means of their fully qualified name) or any artifact following a similar hierarchical naming convention.
+  <p>
+  The example below creates a named categorization with the same properties of our <a rel="footnote" href="#imglabel:log4j_named_properties">logging example</a>.
+  First we obtain categories corresponding to the names "org.jgum" (line 5) and "org.jgum.JGum" (line 6). We set the <code>level</code> property to <code>warn</code> in the "org.jgum" category (line 7). We verify that the property is set for both this category (line 8) and a descendant category that should inherit that property (line 9).
+  In line 10 we verify that the property is undefined for the category "org", since it is an ancestor of the only category defining this property.
+  </p>
+
+  <p><pre data-editor="java" data-show-gutter="true">
+@Test
+public void namedCategorizationInheritance() {
+	final String LEVEL = "level";
+	JGum jgum = new JGum();
+	NamedCategory parent = jgum.forPackage(JGum.class.getPackage()); //named category for "org.jum"
+	NamedCategory child = jgum.forName(JGum.class.getName()); //named category for "org.jum.JGum"
+	parent.setProperty(LEVEL, "WARN"); //level set to "WARN" for "org.jum"
+	assertEquals("WARN", parent.getProperty(LEVEL).get()); //level property is "WARN" for "org.jum"
+	assertEquals("WARN", child.getProperty(LEVEL).get()); //level property is also "WARN" for "org.jum"
+	assertFalse(jgum.forName("org").getProperty(LEVEL).isPresent()); //property has not been set for "org"
+}</pre></p>
+
+
+
+
 
   <h3>Type categorizations</h3>
 
 
+  <h3>Multi-inheritance categorizations</h3>
 
-
+ and Linearization Functions
+ 
+ 
+<!--
   <h2>Miscelaneous Features</h2>
 
   <h3>Iterating on property values in a categorization</h3>
   
   <h3>Category creation listeners</h3>
+-->
 
   <h2>Limitations and Future Work</h2>
   
@@ -231,7 +262,7 @@ JGum abstract it as a general mechanism to associate properties to packages, cla
 
   <h2>Contact</h2>
   
-  Constructive feedback and criticism, questions or a wish list can be sent to <em>[uclouvain.be (that symbol for emails) sergio.castro]</em> (inversing the order).
+  Constructive feedback and criticism, questions or a wish list can be sent to <em>[uclouvain(dot)be (that symbol for emails) sergio(dot)castro]</em> (inversing the order).
   Or just write me a line if you want to say hello ! :-)
   
 </div> <!-- end of content -->
