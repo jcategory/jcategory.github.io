@@ -126,7 +126,8 @@ log4j.logger.org.jgum=WARN</pre></p>
   The following section motivates another kind of categorization based on the existing type hierarchies of a programming language.
   </p>
     
-  <h3>Type Hierarchies</h3>
+    
+  <h3 id="log4j-type-hierarchies">Type Hierarchies</h3>
   
   Back to our logging example, this section illustrates how log4j render objects in logging messages.
   Since generating readable messages is a core objective of logging, log4j allows to associate custom renderers to certain classes.
@@ -142,7 +143,7 @@ log4j.logger.org.jgum=WARN</pre></p>
 
   <div class="divImg">
     <img src="img/log4j_classes.png" alt="Type category properties." style="padding-bottom:0.5em;" />
-    <div>Fig 2. - Type category properties.</div>
+    <div id="imglabel:log4j_type_properties">Fig 2. - Type category properties.</div>
   </div>
 
 
@@ -158,7 +159,7 @@ log4j.logger.org.jgum=WARN</pre></p>
   <h2>The JGum Context</h2>
   
   JGum allows to create and maintain categorizations associated with a context.
-  A new JGum context can be instantiated as follows:
+  A new <a href="../apidocs/org/jgum/JGum.html">JGum context</a> can be instantiated as follows:
 
   <p><pre data-editor="java" data-show-gutter="true">
 JGum jgum = new JGum();</pre></p>
@@ -176,7 +177,7 @@ jgum.getCategorization("my-categorization"); //retrieving the categorization ide
   <h2>JGum Categories</h2> 
   
   The notion of category is a core aspect of the JGum implementation.
-  A JGum category is defined by a group of properties shared by the objects belonging to such category.
+  A <a href="../apidocs/org/jgum/category/Category.html">JGum category</a> is defined by a group of properties shared by the objects belonging to such category.
   Categories can also be defined in terms of other categories, in which case they inherit the properties of their ancestor categories.
   Therefore, categories defines parents-children relationships with other categories.
   
@@ -193,37 +194,72 @@ jgum.getCategorization("my-categorization"); //retrieving the categorization ide
   <h3>Named categorizations</h3>
 
   <p>
-  JGum allows to define named categorizations that structure their hierarchy according to the same naming convention showed in our <a rel="footnote" href="#log4j-named-hierarchies">log4j example</a>.
+  JGum allows to define named categorizations that structure their hierarchy according to the same naming convention showed in our <a rel="footnote" href="#log4j-named-hierarchies">loggers categorization example</a>.
   This categorization approach can be used to associate properties to packages, classes (by means of their fully qualified name) or any artifact following a similar hierarchical naming convention.
   </p>
   
   <p>
   The example below creates a named categorization with the same properties of our <a rel="footnote" href="#imglabel:log4j_named_properties">logging example</a>.
-  First we obtain categories corresponding to the names "org.jgum" (line 5) and "org.jgum.JGum" (line 6). We set the <code>level</code> property to <code>warn</code> in the "org.jgum" category (line 7). We verify that the property is set for both this category (line 8) and a descendant category that should inherit that property (line 9).
-  In line 10 we verify that the property is undefined for the category "org", since it is an ancestor of the only category defining this property.
   </p>
 
   <p><pre data-editor="java" data-show-gutter="true">
 @Test
-public void namedCategorizationInheritance() {
+public void testNamedCategoryInheritance() {
 	final String LEVEL = "level";
 	JGum jgum = new JGum();
 	NamedCategory parent = jgum.forPackage(JGum.class.getPackage()); //named category for "org.jum"
 	NamedCategory child = jgum.forName(JGum.class.getName()); //named category for "org.jum.JGum"
-	parent.setProperty(LEVEL, "WARN"); //level set to "WARN" for "org.jum"
-	assertEquals("WARN", parent.getProperty(LEVEL).get()); //level property is "WARN" for "org.jum"
-	assertEquals("WARN", child.getProperty(LEVEL).get()); //level property is also "WARN" for "org.jum"
-	assertFalse(jgum.forName("org").getProperty(LEVEL).isPresent()); //property has not been set for "org"
+	parent.setProperty(LEVEL, "WARN"); //"level" property set to "WARN" for "org.jum"
+	assertEquals("WARN", parent.getProperty(LEVEL).get()); //"level" property is "WARN" for "org.jum"
+	assertEquals("WARN", child.getProperty(LEVEL).get()); //"level" property is also "WARN" for "org.jum"
+	assertFalse(jgum.forName("org").getProperty(LEVEL).isPresent()); //"level" property has not been set for "org"
 }</pre></p>
 
-
-
-
+  <p>
+  First we obtain categories corresponding to the names <code>"org.jgum"</code> (line 5) and <code>"org.jgum.JGum"</code> (line 6). We set the <code>level</code> property to <code>warn</code> in the <code>"org.jgum"</code> category (line 7). We verify that the property is set for both this category (line 8) and a descendant category that should inherit that property (line 9).
+  In line 10 we verify that the property is undefined for the category <code>"org"</code>, since it is an ancestor of the only category defining this property.
+  </p>
 
   <h3>Type categorizations</h3>
 
+  JGum facilitates the creation of categorizations based on the Java class hierarchy. 
+  Back to our <a rel="footnote" href="#log4j-type-hierarchies">renderers categorization example</a>, considere the classes <code>Fruit</code>, <code>Orange</code> and <code>FruitRenderer</code> as:
+  
+    <p><pre data-editor="java" data-show-gutter="true">
+public class Fruit  {...}
+public class Orange extends Fruit{...}
 
-  <h3>Multi-inheritance categorizations</h3>
+public class FruitRenderer implements ObjectRenderer {
+	@Override
+	public String doRender(Object fruit) {
+		...
+	}
+}</pre></p>
+  
+  
+  The code below shows how the categorization illustrated in our <a rel="footnote" href="#imglabel:log4j_type_properties">rendering example</a> can be implemented in few lines of code.
+
+  <p><pre data-editor="java" data-show-gutter="true">
+@Test
+public void testTypeCategoryInheritance() {
+	final String RENDERER = "renderer";
+	JGum jgum = new JGum();
+	TypeCategory<?> parent = jgum.forClass(Fruit.class); //type category for Fruit.class
+	TypeCategory<?> child = jgum.forClass(Orange.class); //type category for Orange.class
+	FruitRenderer fruitRenderer = new FruitRenderer();
+	parent.setProperty(RENDERER, fruitRenderer); //"renderer" property set to fruitRenderer for Fruit.class
+	assertEquals(fruitRenderer, parent.getProperty(RENDERER).get()); //"renderer" property is fruitRenderer for Fruit.class
+	assertEquals(fruitRenderer, child.getProperty(RENDERER).get()); //"renderer" property is also fruitRenderer for Orange.class
+	assertFalse(jgum.forClass(Object.class).getProperty(RENDERER).isPresent()); //"renderer" property has not been set for Object.class
+}</pre></p>
+
+  <p>
+  First we obtain categories corresponding to the classes <code>Fruit.class</code> (line 5) and <code>Orange.class</code> (line 6). We set the <code>renderer</code> property to <code>fruitRenderer</code> in the <code>Fruit.class</code> category (line 8). We verify that the property is set for both this category (line 9) and a descendant category that should inherit that property (line 10).
+  In line 11 we verify that the property is undefined for the category <code>Object.class</code>, since it is an ancestor of the only category defining this property.
+  </p>
+  
+  
+  <h3>Multi-inheritance hierarchies</h3>
 
  and Linearization Functions
  
