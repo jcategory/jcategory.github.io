@@ -192,7 +192,7 @@ jgum.getCategorization("my-categorization"); //retrieving the categorization ide
   </p>
   
   
-  <h3>Named categorizations</h3>
+  <h3>Named Categorizations</h3>
 
   <p>
   JGum allows to define named categorizations that structure their hierarchy according to the same naming convention showed in our <a rel="footnote" href="#log4j-named-hierarchies">loggers categorization example</a>.
@@ -221,7 +221,7 @@ public void testNamedCategoryInheritance() {
   In line 10 we verify that the property is undefined for the category <code>"org"</code>, since it is an ancestor of the only category defining this property.
   </p>
 
-  <h3>Type categorizations</h3>
+  <h3>Type Categorizations</h3>
 
   JGum facilitates the creation of categorizations based on the Java class hierarchy. 
   Back to our <a rel="footnote" href="#log4j-type-hierarchies">renderers categorization example</a>, considere the classes <code>Fruit</code>, <code>Orange</code> and <code>FruitRenderer</code> as:
@@ -254,18 +254,38 @@ public void testTypeCategoryInheritance() {
 
   <p>
   First we obtain categories corresponding to the classes <code>Fruit.class</code> (line 4) and <code>Orange.class</code> (line 5). 
-  Note that a property identifier can be any object, in this case we set the <code>ObjectRenderer.class</code> property to <code>fruitRenderer</code> in the <code>Fruit.class</code> category (line 7). We verify that the property is set for both this category (line 8) and a descendant category that should inherit that property (line 9).
-  In line 10 we verify that the property is undefined for the category <code>Object.class</code>, since it is an ancestor of the only category defining this property.
+  Note that a property identifier can be any object, in this case we set the <code>ObjectRenderer.class</code> property to <code>fruitRenderer</code> in the <code>Fruit.class</code> category (line 6). We verify that the property is set for both this category (line 7) and a descendant category that should inherit that property (line 8).
+  In line 9 we verify that the property is undefined for the category <code>Object.class</code>, since it is an ancestor of the only category defining this property.
   </p>
   
   
-  <h2>Multi-inheritance hierarchies and Linearization Functions</h2>
+  <h2>Multi-inheritance Categorizations</h2>
+
+  Previous examples illustrates categories inheriting the properties of a single parent category.
+  However, certain categories may be better modelled as inheriting from more than one single parent <sup> <a rel="footnote" href="#fn:meyer">5</a> </sup>. 
+  Unfortunately, multi-inheritance introduces many conceptual and technical problems <sup> <a rel="footnote" href="#fn:inheritance">6</a> </sup>. 
+  
+  <h3>The Diamond Inheritance Problem</h3>
+
+<sup> <a rel="footnote" href="#fn:diamond-inheritance">7</a> </sup>
+
+  <div class="divImg">
+    <img src="img/diamond_inheritance.svg" alt="Diamond inheritance." style="padding-bottom:0.5em;"  />
+    <div><div id="imglabel:diamond_inheritance">Fig 6. - Diamond inheritance.</div><div>( Source: <a href="http://en.wikipedia.org/wiki/File:Diamond_inheritance.svg">http://en.wikipedia.org/wiki/File:Diamond_inheritance.svg</a> )</div></div>
+  </div>
+
+
+  <h3>Linearization Functions</h3>
+  
+  
+
+
 
   <div class="divImg">
     <img src="img/animal_hierarchy.svg" alt="Animal hierarchy example." style="padding-bottom:0.5em;" width="559" height="250" />
     <div id="imglabel:animal_hierarchy" >Fig 3. - Animal hierarchy example.</div>
   </div>
-
+  
   
   <div class="divImg">
     <img src="img/animal_hierarchy_linearization1.svg" alt="Linearization: traversing interfaces first." style="padding-bottom:0.5em;" width="559" height="250" />
@@ -281,10 +301,7 @@ public void testTypeCategoryInheritance() {
   
   
   
-  <div class="divImg">
-    <img src="img/diamond_inheritance.svg" alt="Diamond inheritance." style="padding-bottom:0.5em;"  />
-    <div><div id="imglabel:diamond_inheritance">Fig 6. - Diamond inheritance.</div><div>( Source: <a href="http://en.wikipedia.org/wiki/File:Diamond_inheritance.svg">http://en.wikipedia.org/wiki/File:Diamond_inheritance.svg</a> )</div></div>
-  </div>
+
 
 Wikipedia:
 "Scala resolves method names using a right-first depth-first search of extended 'traits', before eliminating all but the last occurrence of each module in the resulting list. So, the resolution order is: [D, C, A, B, A], which reduces down to [D, C, B, A]."
@@ -328,7 +345,7 @@ Wikipedia:
 
   JGum sources are available at <a href="https://github.com/jgum" title="JGum at GitHub">GitHub</a>.
   <p/>
-  In case you are using Maven, it is also available at the <a href="https://oss.sonatype.org/index.html#nexus-search;quick~jgum" title="JGum at the Sonatype Spanshots repository">Sonatype Spanshots repository</a>. Just add this dependency to your POM to include JGum in your project.
+  In case you are using Maven, it is also available at the <a href="https://oss.sonatype.org/index.html#nexus-search;quick~jgum" title="JGum at the Sonatype Spanshots repository">Sonatype Spanshots repository</a>. Just add this dependency to your POM to include JGum into your project.
 
     <p><pre data-editor="xml" data-show-gutter="true">
 &lt;dependency&gt;
@@ -337,7 +354,7 @@ Wikipedia:
   &lt;version&gt;0.0.1-alpha-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</pre></p>
 
-  You may also find interesting taking a look to the <a href="../apidocs/">JGum API documentation</a>.
+  You may also find interesting taking a look to the <a href="../apidocs/index.html">JGum API documentation</a>.
 
   <h2>Contact</h2>
   
@@ -371,6 +388,18 @@ Wikipedia:
   	The conceptual grouping effect: Categories matter (and named categories matter more). Gary Lupyan. Cognition, Vol. 108, No. 2. August 2008.
   </li>
 
+  <li id="fn:meyer">
+  	Object Oriented Software Construction. Bertrand Meyer. August 1997.
+  </li>
+  
+  <li id="fn:inheritance">
+  	On the Notion of Inheritance. Antero Taivalsaari. ACM Computing Surveys, Vol. 28, pages 438 - 479. 1996.
+  </li>
+  
+  <li id="fn:diamond-inheritance">
+    The programming language Jigsaw: Mixins, modularity and multiple inheritance. Bracha, G. Ph.D. thesis, Univ. of Utah, March 1992. 
+  </li>
+  
   </ol>
 </div> <!-- end of footnotes -->
 
