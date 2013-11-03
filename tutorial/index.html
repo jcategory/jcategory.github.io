@@ -261,41 +261,49 @@ public void testTypeCategoryInheritance() {
   
   <h2>Multi-inheritance Categorizations</h2>
 
-  Previous examples illustrates categories inheriting the properties of a single parent category.
-  However, certain categories may be better modelled as inheriting from more than one single parent <sup> <a rel="footnote" href="#fn:meyer">5</a> </sup>. 
-  Unfortunately, multi-inheritance introduces many conceptual and technical problems <sup> <a rel="footnote" href="#fn:inheritance">6</a> </sup>. 
+  Previous examples illustrates categories inheriting the properties of a single parent category, creating tree-structured category hierarchies.
+  However, other categories may be better modelled as inheriting from more than one single parent <sup> <a rel="footnote" href="#fn:meyer">5</a> </sup>. 
+  Although powerful in expresiveness, multi-inheritance introduces many conceptual and technical problems <sup> <a rel="footnote" href="#fn:inheritance">6</a> </sup>. 
+  
+  The following section illustrates this with one common problematic scenario in multi-inheritance categorizations.
   
   <h3>The Diamond Inheritance Problem</h3>
 
-<sup> <a rel="footnote" href="#fn:diamond-inheritance">7</a> </sup>
+  The figure below illustrates a problem referred as <q>diamond inheritance</q> <sup> <a rel="footnote" href="#fn:diamond-inheritance">7</a> </sup> with a concrete example.
+  Categories <code>B</code> and <code>C</code> inherits from <code>A</code>. They define different values for the property <code>p</code>.
+  If category <code>D</code> inherits from both <code>B</code> and <code>C</code>, the value of this property in <code>D</code> is ambiguous.
 
   <div class="divImg">
-    <img src="img/diamond_inheritance.svg" alt="Diamond inheritance." style="padding-bottom:0.5em;"  />
-    <div><div id="imglabel:diamond_inheritance">Fig 6. - Diamond inheritance.</div><div>( Source: <a href="http://en.wikipedia.org/wiki/File:Diamond_inheritance.svg">http://en.wikipedia.org/wiki/File:Diamond_inheritance.svg</a> )</div></div>
+    <img src="img/diamond_inheritance.svg" alt="Diamond inheritance." style="padding-bottom:0.5em;" width="369" height="208" />
+    <div id="imglabel:diamond_inheritance">Fig 3. - Diamond inheritance.</div>
   </div>
 
-
+  Although there are many different mechanisms to solve this kind of multi-inheritance problem, unfortunately there is not a perfect one-fit-all solution<sup> <a rel="footnote" href="#fn:name-collision">8</a> </sup>.
+  
+  The following section illustrates the approach followed by JGum.
+  
   <h3>Linearization Functions</h3>
   
-  
+  Linearization is a common approach for solving multi-inheritance conflicts <sup> <a rel="footnote" href="#fn:linearization">9</a> </sup>.
+  It defines a lineal order in which (super-)categories should be visited when querying a property.
 
 
 
   <div class="divImg">
     <img src="img/animal_hierarchy.svg" alt="Animal hierarchy example." style="padding-bottom:0.5em;" width="559" height="250" />
-    <div id="imglabel:animal_hierarchy" >Fig 3. - Animal hierarchy example.</div>
+    <div id="imglabel:animal_hierarchy" >Fig 4. - Animal hierarchy example.</div>
   </div>
   
   
   <div class="divImg">
     <img src="img/animal_hierarchy_linearization1.svg" alt="Linearization: traversing interfaces first." style="padding-bottom:0.5em;" width="559" height="250" />
-    <div id="imglabel:animal_hierarchy_linearization1" >Fig 4. - Linearization: traversing interfaces first.</div>
+    <div id="imglabel:animal_hierarchy_linearization1" >Fig 5. - Linearization: traversing interfaces first.</div>
   </div>
   
   
   <div class="divImg">
     <img src="img/animal_hierarchy_linearization2.svg" alt="Linearization: traversing classes first." style="padding-bottom:0.5em;" width="559" height="250" />
-    <div id="imglabel:animal_hierarchy_linearization2" >Fig 5. - Linearization: traversing classes first.</div>
+    <div id="imglabel:animal_hierarchy_linearization2" >Fig 6. - Linearization: traversing classes first.</div>
   </div>
   
   
@@ -305,7 +313,7 @@ public void testTypeCategoryInheritance() {
 
 Wikipedia:
 "Scala resolves method names using a right-first depth-first search of extended 'traits', before eliminating all but the last occurrence of each module in the resulting list. So, the resolution order is: [D, C, A, B, A], which reduces down to [D, C, B, A]."
-	
+	<a rel="footnote" href="#fn:scala">10</a> </sup>.
  
  
 <!--
@@ -400,7 +408,20 @@ Wikipedia:
     The programming language Jigsaw: Mixins, modularity and multiple inheritance. Bracha, G. Ph.D. thesis, Univ. of Utah, March 1992. 
   </li>
   
+  <li id="fn:name-collision">
+    Name Collision in Multiple Classification Hierarchies. Knudsen. European Conference on Object-Oriented Programming, Oslo, Norway. August 1988.
+  </li>
+  
+  <li id="fn:linearization">
+    Proposal for a Monotonic Multiple Inheritance Linearization. Roland Ducournau, Michel Habib, Marianne Huchard, and Marie-Laure Mugnier. OOPSLA, page 164-175. ACM. 1994.
+  </li>  
+  
+  <li id="fn:scala">
+    Programming in Scala. Martin Odersky, Lex Spoon and Bill Venners. Artima Press, Mountain View, CA. 2 edition. January 2011.
+  </li>
+  
   </ol>
+  
 </div> <!-- end of footnotes -->
 
 </body>
