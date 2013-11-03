@@ -269,7 +269,7 @@ public void testTypeCategoryInheritance() {
   
   <h3>The Diamond Inheritance Problem</h3>
 
-  The figure below illustrates a problem referred as <q>diamond inheritance</q> <sup> <a rel="footnote" href="#fn:diamond-inheritance">7</a> </sup> with a concrete example.
+  The figure below illustrates a problem referred as <q>diamond inheritance</q> <sup> <a rel="footnote" href="#fn:diamond-inheritance">7</a> </sup> with a simple example.
   Categories <code>B</code> and <code>C</code> inherits from <code>A</code>. They define different values for the property <code>p</code>.
   If category <code>D</code> inherits from both <code>B</code> and <code>C</code>, the value of this property in <code>D</code> is ambiguous.
 
@@ -285,15 +285,60 @@ public void testTypeCategoryInheritance() {
   <h3>Linearization Functions</h3>
   
   Linearization is a common approach for solving multi-inheritance conflicts <sup> <a rel="footnote" href="#fn:linearization">9</a> </sup>.
-  It defines a lineal order in which (super-)categories should be visited when querying a property.
+  
+  In order to illustrate this approach, let's considere the following classes and interfaces defining a taxonomy of animals.
 
+<p><pre data-editor="java" data-show-gutter="true">
+public class Animal {}
+public interface HasLegs {}
+public interface FourLegged extends HasLegs {}
+public interface Furry {}
+public class Cat extends Animal implements Furry, FourLegged {}
+public class Fish extends Animal {}</pre></p>
 
+  
+  
+  <p>
+  Figure 4 illustrates a JGum type categorization based on this class hierarchy.
+  First note that JGum adds the special class <code>Any</code> at the root of the hierarchy.
+  This design decision allows to have a common root for both class and interface type categories.
+  </p>
+  
+  <p>
+  Also observe that although in Java there is not really multi-inheritance (at least at the time of writing), we have created a multi-inheritance type categorization based on the Java class hierarchy classes. 
+  This is because JGum typed categorizations considere, in many aspects, both classes and interfaces as similar categorization units.
+  </p>
 
   <div class="divImg">
     <img src="img/animal_hierarchy.svg" alt="Animal hierarchy example." style="padding-bottom:0.5em;" width="559" height="250" />
     <div id="imglabel:animal_hierarchy" >Fig 4. - Animal hierarchy example.</div>
   </div>
   
+  In order to associate renderers to the type categories <code>Animal</code> and <code>HasLegs</code> as illustrated in the figure, we can write:
+  
+  <p><pre data-editor="java" data-show-gutter="true">
+JGum jgum = new JGum();
+TypeCategory<?> animalCategory = jgum.forClass(Animal.class); //type category for Animal.class
+animalCategory.setProperty(ObjectRenderer.class, AnimalRenderer.class); //ObjectRenderer.class property is AnimalRenderer.class for Animal.class
+TypeCategory<?> hasLegsCategory = jgum.forClass(HasLegs.class); //type category for HasLegs.class
+hasLegsCategory.setProperty(ObjectRenderer.class, HasLegsRenderer.class); //ObjectRenderer.class property is HasLegsRenderer.class for HasLegs.class</pre></p>
+
+  This scenario provides for both non-conflictive and conflictive property resolution problems.
+  In the simplest case, let's considere we would like to query the render property for the type category <code>Fish</code>.
+  Since there is only single inheritance in the category hierarchy of <code>Fish</code>, its renderer is trivially found from the first ancestor defining such property, as the following test illustrates:
+  
+    <p><pre data-editor="java" data-show-gutter="true">
+...
+TypeCategory<?> fishCategory = jgum.forClass(Fish.class); //type category for Fish.class
+assertEquals(AnimalRenderer.class, fishCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer.class property is AnimalRenderer.class for Fish.class</pre></p>
+  
+  However, if we ask which is the appropriate renderer for instances of <code>Cat</code>, different property resolution strategies will answer different values.
+  For example, some may think that categories from implemented interfaces should be looked up first. In this case <code>HasLegRenderer</code> should be returned.
+  Others may prefer to query first categories corresponding super classes. In that case <code>AnimalRenderer</code> should be returned.
+  
+  Linearization helps to solve this conflict unambiguously defining a lineal order in which (super-)categories should be visited when querying a property.
+  as explained before, there is not a perfect general solution to determine which is the right value of a property inherited from multiple ancestors.
+  which is the right renderer for a 
   
   <div class="divImg">
     <img src="img/animal_hierarchy_linearization1.svg" alt="Linearization: traversing interfaces first." style="padding-bottom:0.5em;" width="559" height="250" />
@@ -351,7 +396,7 @@ Wikipedia:
   
   <h2>Try it !</h2>
 
-  JGum sources are available at <a href="https://github.com/jgum" title="JGum at GitHub">GitHub</a>.
+  JGum sources are available at <a href="https://github.com/jgum/jgum" title="JGum at GitHub">GitHub</a>.
   <p/>
   In case you are using Maven, it is also available at the <a href="https://oss.sonatype.org/index.html#nexus-search;quick~jgum" title="JGum at the Sonatype Spanshots repository">Sonatype Spanshots repository</a>. Just add this dependency to your POM to include JGum into your project.
 
