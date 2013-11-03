@@ -107,9 +107,10 @@ log4j.logger.org.jgum=WARN</pre></p>
     
 
   <div class="divImg">
-    <img src="img/log4j_packages.png" alt="Named category properties." style="padding-bottom:0.5em;" />
+    <img src="img/log4j_packages.svg" alt="Named category properties." style="padding-bottom:0.5em;" width="268" height="233" />
     <div id="imglabel:log4j_named_properties" >Fig 1. - Named category properties.</div>
   </div>
+
 
   <p>
   Note that although it is not showed in the figure, the actual implementation of log4j defines <code>level</code> and other properties with default values in the root category.
@@ -142,10 +143,10 @@ log4j.logger.org.jgum=WARN</pre></p>
 
 
   <div class="divImg">
-    <img src="img/log4j_classes.png" alt="Type category properties." style="padding-bottom:0.5em;" />
+    <img src="img/log4j_classes.svg" alt="Type category properties." style="padding-bottom:0.5em;" width="314" height="174" />
     <div id="imglabel:log4j_type_properties">Fig 2. - Type category properties.</div>
   </div>
-
+  
 
   Therefore, this categorization is based on an existing categorization already provided by the language (a hierarchy of classes). 
   
@@ -242,26 +243,52 @@ public class FruitRenderer implements ObjectRenderer {
   <p><pre data-editor="java" data-show-gutter="true">
 @Test
 public void testTypeCategoryInheritance() {
-	final String RENDERER = "renderer";
 	JGum jgum = new JGum();
-	TypeCategory<?> parent = jgum.forClass(Fruit.class); //type category for Fruit.class
-	TypeCategory<?> child = jgum.forClass(Orange.class); //type category for Orange.class
-	FruitRenderer fruitRenderer = new FruitRenderer();
-	parent.setProperty(RENDERER, fruitRenderer); //"renderer" property set to fruitRenderer for Fruit.class
-	assertEquals(fruitRenderer, parent.getProperty(RENDERER).get()); //"renderer" property is fruitRenderer for Fruit.class
-	assertEquals(fruitRenderer, child.getProperty(RENDERER).get()); //"renderer" property is also fruitRenderer for Orange.class
-	assertFalse(jgum.forClass(Object.class).getProperty(RENDERER).isPresent()); //"renderer" property has not been set for Object.class
+	TypeCategory<?> fruitCategory = jgum.forClass(Fruit.class); //type category for Fruit.class
+	TypeCategory<?> orangeCategory = jgum.forClass(Orange.class); //type category for Orange.class
+	fruitCategory.setProperty(ObjectRenderer.class, FruitRenderer.class); //ObjectRenderer.class property set to FruitRenderer.class for Fruit.class
+	assertEquals(FruitRenderer.class, fruitCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer.class property is FruitRenderer.class for Fruit.class
+	assertEquals(FruitRenderer.class, orangeCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer.class property is also FruitRenderer.class for Orange.class
+	assertFalse(jgum.forClass(Object.class).getProperty(ObjectRenderer.class).isPresent()); //ObjectRenderer.class property has not been set for Object.class
 }</pre></p>
 
   <p>
-  First we obtain categories corresponding to the classes <code>Fruit.class</code> (line 5) and <code>Orange.class</code> (line 6). We set the <code>renderer</code> property to <code>fruitRenderer</code> in the <code>Fruit.class</code> category (line 8). We verify that the property is set for both this category (line 9) and a descendant category that should inherit that property (line 10).
-  In line 11 we verify that the property is undefined for the category <code>Object.class</code>, since it is an ancestor of the only category defining this property.
+  First we obtain categories corresponding to the classes <code>Fruit.class</code> (line 4) and <code>Orange.class</code> (line 5). 
+  Note that a property identifier can be any object, in this case we set the <code>ObjectRenderer.class</code> property to <code>fruitRenderer</code> in the <code>Fruit.class</code> category (line 7). We verify that the property is set for both this category (line 8) and a descendant category that should inherit that property (line 9).
+  In line 10 we verify that the property is undefined for the category <code>Object.class</code>, since it is an ancestor of the only category defining this property.
   </p>
   
   
-  <h3>Multi-inheritance hierarchies</h3>
+  <h2>Multi-inheritance hierarchies and Linearization Functions</h2>
 
- and Linearization Functions
+  <div class="divImg">
+    <img src="img/animal_hierarchy.svg" alt="Animal hierarchy example." style="padding-bottom:0.5em;" width="559" height="250" />
+    <div id="imglabel:animal_hierarchy" >Fig 3. - Animal hierarchy example.</div>
+  </div>
+
+  
+  <div class="divImg">
+    <img src="img/animal_hierarchy_linearization1.svg" alt="Linearization: traversing interfaces first." style="padding-bottom:0.5em;" width="559" height="250" />
+    <div id="imglabel:animal_hierarchy_linearization1" >Fig 4. - Linearization: traversing interfaces first.</div>
+  </div>
+  
+  
+  <div class="divImg">
+    <img src="img/animal_hierarchy_linearization2.svg" alt="Linearization: traversing classes first." style="padding-bottom:0.5em;" width="559" height="250" />
+    <div id="imglabel:animal_hierarchy_linearization2" >Fig 5. - Linearization: traversing classes first.</div>
+  </div>
+  
+  
+  
+  
+  <div class="divImg">
+    <img src="img/diamond_inheritance.svg" alt="Diamond inheritance." style="padding-bottom:0.5em;"  />
+    <div><div id="imglabel:diamond_inheritance">Fig 6. - Diamond inheritance.</div><div>( Source: <a href="http://en.wikipedia.org/wiki/File:Diamond_inheritance.svg">http://en.wikipedia.org/wiki/File:Diamond_inheritance.svg</a> )</div></div>
+  </div>
+
+Wikipedia:
+"Scala resolves method names using a right-first depth-first search of extended 'traits', before eliminating all but the last occurrence of each module in the resulting list. So, the resolution order is: [D, C, A, B, A], which reduces down to [D, C, B, A]."
+	
  
  
 <!--
