@@ -337,18 +337,18 @@ assertEquals(AnimalRenderer.class, fishCategory.getProperty(ObjectRenderer.class
   Others may prefer to query first categories corresponding super classes. In that case <code>AnimalRenderer</code> should be returned.
   
   Linearization helps to solve this conflict unambiguously defining a lineal order in which (super-)categories should be visited when querying a property.
-  as explained before, there is not a perfect general solution to determine which is the right value of a property inherited from multiple ancestors.
-  which is the right renderer for a 
+  
+  The default type linearization function is inspired in the linearization function used by Scala. JGum uses a right-first depth first search. 
   
   <div class="divImg">
     <img src="img/animal_hierarchy_linearization1.svg" alt="Linearization: traversing interfaces first." style="padding-bottom:0.5em;" width="559" height="250" />
-    <div id="imglabel:animal_hierarchy_linearization1" >Fig 5. - Linearization: traversing interfaces first.</div>
+    <div id="imglabel:animal_hierarchy_linearization1" >Fig 5. - Linearization: Right to left (interfaces first).</div>
   </div>
   
   
   <div class="divImg">
     <img src="img/animal_hierarchy_linearization2.svg" alt="Linearization: traversing classes first." style="padding-bottom:0.5em;" width="559" height="250" />
-    <div id="imglabel:animal_hierarchy_linearization2" >Fig 6. - Linearization: traversing classes first.</div>
+    <div id="imglabel:animal_hierarchy_linearization2" >Fig 6. - Linearization: Left to right (classes first).</div>
   </div>
   
   
@@ -360,6 +360,7 @@ Wikipedia:
 "Scala resolves method names using a right-first depth-first search of extended 'traits', before eliminating all but the last occurrence of each module in the resulting list. So, the resolution order is: [D, C, A, B, A], which reduces down to [D, C, B, A]."
 	<a rel="footnote" href="#fn:scala">10</a> </sup>.
  
+ This algorithm has the advantage that an ancestor category will not be reached until all the desdendants leading to it has been explored.
  
 <!--
   <h2>Miscelaneous Features</h2>
