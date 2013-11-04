@@ -249,8 +249,8 @@ public class FruitRenderer implements ObjectRenderer {
 @Test
 public void testTypeCategoryInheritance() {
 	JGum jgum = new JGum();
-	TypeCategory<?> fruitCategory = jgum.forClass(Fruit.class); //type category for Fruit.class
-	TypeCategory<?> orangeCategory = jgum.forClass(Orange.class); //type category for Orange.class
+	TypeCategory&lt;?&gt; fruitCategory = jgum.forClass(Fruit.class); //type category for Fruit.class
+	TypeCategory&lt;?&gt; orangeCategory = jgum.forClass(Orange.class); //type category for Orange.class
 	fruitCategory.setProperty(ObjectRenderer.class, FruitRenderer.class); //ObjectRenderer.class property set to FruitRenderer.class for Fruit.class
 	assertEquals(FruitRenderer.class, fruitCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer.class property is FruitRenderer.class for Fruit.class
 	assertEquals(FruitRenderer.class, orangeCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer.class property is also FruitRenderer.class for Orange.class
@@ -328,10 +328,10 @@ public class Fish extends Animal {}</pre></p>
   
   <p><pre data-editor="java" data-show-gutter="true">
 JGum jgum = new JGum();
-TypeCategory<?> animalCategory = jgum.forClass(Animal.class); //type category for Animal.class
-animalCategory.setProperty(ObjectRenderer.class, AnimalRenderer.class); //ObjectRenderer.class property is AnimalRenderer.class for Animal.class
-TypeCategory<?> hasLegsCategory = jgum.forClass(HasLegs.class); //type category for HasLegs.class
-hasLegsCategory.setProperty(ObjectRenderer.class, HasLegsRenderer.class); //ObjectRenderer.class property is HasLegsRenderer.class for HasLegs.class</pre></p>
+TypeCategory&lt;?&gt; animalCategory = jgum.forClass(Animal.class); //type category for Animal
+TypeCategory&lt;?&gt; hasLegsCategory = jgum.forClass(HasLegs.class); //type category for HasLegs
+animalCategory.setProperty(ObjectRenderer.class, AnimalRenderer.class); //ObjectRenderer property is AnimalRenderer for Animal
+hasLegsCategory.setProperty(ObjectRenderer.class, HasLegsRenderer.class); //ObjectRenderer property is HasLegsRenderer for HasLegs</pre></p>
 
   This scenario provides for both non-conflictive and conflictive property resolution problems.
   In the simplest case, let's considere we would like to query the render property for the type category <code>Fish</code>.
@@ -339,8 +339,8 @@ hasLegsCategory.setProperty(ObjectRenderer.class, HasLegsRenderer.class); //Obje
   
     <p><pre data-editor="java" data-show-gutter="true">
 ...
-TypeCategory<?> fishCategory = jgum.forClass(Fish.class); //type category for Fish.class
-assertEquals(AnimalRenderer.class, fishCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer.class property is AnimalRenderer.class for Fish.class</pre></p>
+TypeCategory&lt;?&gt; fishCategory = jgum.forClass(Fish.class); //type category for Fish
+assertEquals(AnimalRenderer.class, fishCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is AnimalRenderer for Fish</pre></p>
   
   However, if we ask which is the appropriate renderer for instances of <code>Cat</code>, different property resolution strategies will answer different values.
   For example, some may think that categories from implemented interfaces should be looked up first. In this case <code>HasLegRenderer</code> should be returned.
@@ -360,14 +360,41 @@ assertEquals(AnimalRenderer.class, fishCategory.getProperty(ObjectRenderer.class
   
   As the figure shows, this algorithm has the advantage that an ancestor category will not be reached until all the desdendants leading to it has been explored.
   
+    <p><pre data-editor="java" data-show-gutter="true">
+...	
+TypeCategory&lt;?&gt; catCategory = jgum.forClass(Cat.class); //type category for Cat
+assertEquals(HasLegsRenderer.class, catCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is HasLegsRenderer for Cat</pre></p>
+
+
+  We can explicitly configure the linearization function with the following code:
   
+      <p><pre data-editor="java" data-show-gutter="true">
+Function&lt;TypeCategory&lt;?&gt;, List&lt;TypeCategory&lt;?&gt;&gt;&gt; linearizationFunction = 
+		new BottomUpTypeTraversalPolicy( 
+		SearchStrategy.PRE_ORDER, //pre-order search
+		Priority.INTERFACES_FIRST, //look first at interfaces, then classes
+		InterfaceOrder.REVERSE, //traverse the interfaces from right to left (reverse declaration order)
+		RedundancyCheck.KEEP_LAST); //if a category appears more than once in the linearization, keep the last found and discard the previous ones.
+JGum jgum = new JGum(linearizationFunction);</pre></p>
+        
+        
+  Alternatively, we could have configured an alternative linearization function, that look first at classes and then at interfaces:
+  
+      <p><pre data-editor="java" data-show-gutter="true">
+Function&lt;TypeCategory&lt;?&gt;, List<TypeCategory&lt;?&gt;&gt;&gt; linearizationFunction = 
+		new BottomUpTypeTraversalPolicy(
+		SearchStrategy.PRE_ORDER, //pre-order search
+		Priority.CLASSES_FIRST, //look first at classes, then interfaces
+		InterfaceOrder.DECLARATION, //traverse the interfaces from left to right (declaration order)
+		RedundancyCheck.KEEP_LAST); //if a category appears more than once in the linearization, keep the last found and discard the previous ones.
+JGum jgum = new JGum(linearizationFunction);</pre></p>
   
   <div class="divImg">
     <img src="img/animal_hierarchy_linearization2.svg" alt="Linearization: traversing classes first." style="padding-bottom:0.5em;" width="559" height="250" />
     <div id="imglabel:animal_hierarchy_linearization2" >Fig 6. - Linearization: Left to right (classes first).</div>
   </div>
   
-  
+  In this setting, the renderer for instances of <code>Cat</code> are <code>AnimalRenderer</code>, since it found earlier in the list of categories returned by the linearization function.
 
 	
  
