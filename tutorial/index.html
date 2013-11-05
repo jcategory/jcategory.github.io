@@ -75,7 +75,7 @@ WORK IN PROGRESS....
   </p>
   
   <p>
-  Since ancient times, conceptual grouping is a natural human way to create abstract models of the world <sup> <a rel="footnote" href="#fn:aristo">1</a> </sup>.
+  Since ancient times, conceptual grouping has been a natural human way to create abstract models of the world <sup> <a rel="footnote" href="#fn:aristo">1</a> </sup>.
   In computer science, the notion of categories plays a major role in computer programming <sup> <a rel="footnote" href="#fn:classes-vs-prototypes">2</a> </sup>.
   Particularly, different categorization mechanisms are often implicit in most programming languages (e.g., classes and packages).
   However, for statically-typed languages it is often not trivial (or not possible at all) to modify at runtime the properties of existing categories, or creating new categories on the fly.
@@ -89,11 +89,11 @@ WORK IN PROGRESS....
 
   <h2>Having Fun with Categories (or a Short Introduction to <a href="http://logging.apache.org/log4j/1.2/" title="Apache log4j">log4j</a>)</h2>
   
-  This section illustrates a typical usage of custom categories in every day programming by means of reviewing common logging practices using a well known Java library.
+  This section illustrates a typical usage of custom categories in everyday programming by means of reviewing common logging practices using a well known Java library.
   
   <h3 id="log4j-named-hierarchies">Named Hierarchies</h3>
 
-  Popular logging libraries such as <a href="http://logging.apache.org/log4j/1.2/" title="Apache log4j">log4j</a> allow fine grained control on which kind of logging message (e.g., warning or error) should be processed at runtime.
+  Popular logging libraries such as <a href="http://logging.apache.org/log4j/1.2/" title="Apache log4j">log4j</a> allow fine-grained control on which kind of logging message (e.g., warning or error) should be processed at runtime.
   This control is enabled since programmers can easily categorize a <q>logging space</q> <sup> <a rel="footnote" href="#fn:apache-manual">3</a> </sup> according to some developer-chosen criteria.
   
   Loggers are organized hierarchically following a naming rule. For example, a logger named <code>"org"</code> is the parent of a logger named <code>"org.jgum"</code>, and the ancestor of a logger named <code>"org.jgum.JGum"</code>.
@@ -147,14 +147,14 @@ log4j.logger.org.jgum=WARN</pre></p>
   </p>
   
   <p>
-  Since generating readable messages is a core objective of logging, log4j allows to associate custom renderers to certain classes.
+  Since generating readable messages is a core objective of logging, log4j allows to associate custom renderers with certain classes.
   The renderers are responsible to convert instances of such classes to a convenient string representation for logging purposes.
   </p>
   
   Quoting the <a href="http://logging.apache.org/log4j/1.2/manual.html">log4j manual</a>:
   <q>Object rendering follows the class hierarchy. For example, assuming oranges are fruits, if you register a <code>FruitRenderer</code>, all fruits including oranges will be rendered by the <code>FruitRenderer</code>, unless of course you registered an orange specific OrangeRenderer </q>.
 
-  Following this example, we would like to associate a property (a renderer) to the category identified by the <code>Fruit</code> class. However, in this setting we require a different categorization heuristic: instead of categorizing a class according to its fully qualified name as in the previous section, we want to do it according to its position in a class hierarchy. This categorization is illustrated by the figure below.
+  Following this example, we would like to associate a property (a renderer) with the category identified by the <code>Fruit</code> class. However, in this setting we require a different categorization heuristic: instead of categorizing a class according to its fully qualified name as in the previous section, we want to do it according to its position in a class hierarchy. This categorization is illustrated by the figure below.
 
 
   <div class="divImg">
@@ -192,9 +192,9 @@ jgum.getCategorization("my-categorization"); //retrieving the categorization ide
   <h2>JGum Categories</h2> 
   
   The notion of category is a core aspect of the JGum implementation.
-  A <a href="../apidocs/org/jgum/category/Category.html">JGum category</a> is defined by a group of properties shared by the objects belonging to such category.
+  A <a href="../apidocs/org/jgum/category/Category.html">JGum category</a> is defined by a group of properties shared by the objects belonging to such a category.
   Categories can also be defined in terms of other categories, in which case they inherit the properties of their ancestor categories.
-  Therefore, categories defines parents-children relationships with other categories.
+  Therefore, categories define parents-children relationships with other categories.
   
   <p>JGum categories may be associated with an identifying <a href="../apidocs/org/jgum/category/LabeledCategory.html">label</a>. 
   According to the chosen categorization, this label may determine the position of the category in a hierarchy (e.g., <a href="#log4j-named-hierarchies">named hierarchies</a>), or just serve as a human aid facilitating reasoning over the category and its instances  <sup> <a rel="footnote" href="#fn:categories-matter">4</a> </sup>.
@@ -210,11 +210,11 @@ jgum.getCategorization("my-categorization"); //retrieving the categorization ide
 
   <p>
   JGum allows to define <a href="../apidocs/org/jgum/category/named/NamedCategory.html">named categorizations</a> that structure their hierarchy according to the naming convention described in our <a rel="footnote" href="#log4j-named-hierarchies">loggers categorization example</a>.
-  This categorization approach can be used to associate properties to Java packages, classes (by means of their fully qualified name) or any artifact following a similar hierarchical naming convention.
+  This categorization approach can be used to associate properties with Java packages, classes (by means of their fully qualified name) or any artifact following a similar hierarchical naming convention.
   </p>
   
   <p>
-  The example below creates a named categorization with the same properties than our <a rel="footnote" href="#imglabel:log4j_named_properties">logging example</a>.
+  The example below creates a named categorization with the same properties that our <a rel="footnote" href="#imglabel:log4j_named_properties">logging example</a>.
   </p>
 
   <p><pre data-editor="java" data-show-gutter="true">
@@ -235,7 +235,7 @@ assertFalse(jgum.forName("org").getProperty(LEVEL).isPresent()); //"level" prope
   <h3>Type Categorizations</h3>
 
   JGum facilitates the creation of <a href="../apidocs/org/jgum/category/type/TypeCategory.html">type categorizations</a> based on the Java class hierarchy. 
-  Back to our <a rel="footnote" href="#log4j-type-hierarchies">renderers categorization example</a>, considere the classes <code>Fruit</code>, <code>Orange</code> and <code>FruitRenderer</code> as:
+  Back to our <a rel="footnote" href="#log4j-type-hierarchies">renderers categorization example</a>, consider the classes <code>Fruit</code>, <code>Orange</code> and <code>FruitRenderer</code> as:
   
     <p><pre data-editor="java" data-show-gutter="true">
 public class Fruit  {...}
@@ -273,7 +273,7 @@ assertFalse(jgum.forClass(Object.class).getProperty(ObjectRenderer.class).isPres
   <p>
   Previous examples showed categories inheriting the properties of a single parent category, creating tree-structured category hierarchies.
   However, other categories may be better modelled as inheriting from more than one single parent. 
-  Although powerful in expresiveness <sup> <a rel="footnote" href="#fn:meyer">5</a> </sup>, multi-inheritance introduces many conceptual and technical problems <sup> <a rel="footnote" href="#fn:inheritance">6</a> </sup>. 
+  Although powerful in expressiveness <sup> <a rel="footnote" href="#fn:meyer">5</a> </sup>, multi-inheritance introduces many conceptual and technical problems <sup> <a rel="footnote" href="#fn:inheritance">6</a> </sup>. 
   </p>
   
   <p>
@@ -282,8 +282,8 @@ assertFalse(jgum.forClass(Object.class).getProperty(ObjectRenderer.class).isPres
   
   <h3>The Diamond Inheritance Problem</h3>
 
-  The figure below illustrates a known problem referred as <q>diamond inheritance</q> <sup> <a rel="footnote" href="#fn:diamond-inheritance">7</a> </sup> with a simple example.
-  Categories <code>B</code> and <code>C</code> inherits from <code>A</code>. They define different values for the property <code>p</code>.
+  The figure below illustrates a known problem referred to as <q>diamond inheritance</q> <sup> <a rel="footnote" href="#fn:diamond-inheritance">7</a> </sup> with a simple example.
+  Categories <code>B</code> and <code>C</code> inherit from <code>A</code>. They define different values for the property <code>p</code>.
   If category <code>D</code> inherits from both <code>B</code> and <code>C</code>, the value of the property <code>p</code> is ambiguous in <code>D</code> .
 
   <div class="divImg">
@@ -299,7 +299,7 @@ assertFalse(jgum.forClass(Object.class).getProperty(ObjectRenderer.class).isPres
   
   Linearization is a common approach for solving multi-inheritance conflicts <sup> <a rel="footnote" href="#fn:linearization">9</a> </sup>.
   
-  In order to illustrate this approach, let's considere the following classes and interfaces defining a taxonomy of animals (example adapted from a popular Scala book <sup> <a rel="footnote" href="#fn:scala-book">10</a> </sup>) :
+  In order to illustrate this approach, let's consider the following classes and interfaces defining a taxonomy of animals (example adapted from a popular Scala book <sup> <a rel="footnote" href="#fn:scala-book">10</a> </sup>) :
 
 <p><pre data-editor="java" data-show-gutter="true">
 public class Animal {}
@@ -328,11 +328,11 @@ public class Fish extends Animal {}</pre></p>
   
   <p>
   Also observe that although in Java there is not really multi-inheritance (at least not at the time of writing), we have created a multi-inheritance type categorization based on the Java class hierarchy. 
-  This is because JGum type categorizations considere, in many aspects, both classes and interfaces as same-level categorization units.
+  This is because JGum type categorizations consider, in many aspects, both classes and interfaces as same-level categorization units.
   </p>
   
   The figure also shows some properties (renderers) of two type categories.
-  In order to associate those renderers to the categories <code>Animal</code> and <code>HasLegs</code>, we can write:
+  In order to associate those renderers with the categories <code>Animal</code> and <code>HasLegs</code>, we can write:
   
   <p><pre data-editor="java" data-show-gutter="true">
 JGum jgum = new JGum();
@@ -342,8 +342,8 @@ animalCategory.setProperty(ObjectRenderer.class, AnimalRenderer.class); //settin
 hasLegsCategory.setProperty(ObjectRenderer.class, HasLegsRenderer.class); //setting property ObjectRenderer to HasLegsRenderer in HasLegs</pre></p>
 
   This example provides for both non-conflictive and conflictive property resolution scenarios.
-  In the simplest case, let's considere we would like to query the render property for the <code>Fish</code> category.
-  Since there is only single inheritance in the category hierarchy of <code>Fish</code>, its renderer is trivially found from the first ancestor defining such property (i.e., <code>Animal</code>), as the following test illustrates:
+  In the simplest case, let's consider we would like to query the render property for the <code>Fish</code> category.
+  Since there is only single inheritance in the category hierarchy of <code>Fish</code>, its renderer is trivially found from the first ancestor defining such a property (i.e., <code>Animal</code>), as the following test illustrates:
   
     <p><pre data-editor="java" data-show-gutter="true">
 ...
@@ -351,7 +351,7 @@ TypeCategory&lt;?&gt; fishCategory = jgum.forClass(Fish.class); //type category 
 assertEquals(AnimalRenderer.class, fishCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is AnimalRenderer for Fish</pre></p>
   
   <p>
-  However, if we ask which is the appropriate renderer for instances of <code>Cat</code>, different property resolution strategies may answer different values.
+  However, if we ask which is the appropriate renderer for instances of <code>Cat</code>, different property resolution strategies may result in different values.
   For example, some may think that categories from super interfaces should be looked up first. In this case <code>HasLegRenderer</code> should be returned.
   Others may prefer to query first categories corresponding to the super class. In that case <code>AnimalRenderer</code> should be returned.
   </p>
@@ -399,7 +399,7 @@ Function&lt;TypeCategory&lt;?&gt;, List&lt;TypeCategory&lt;?&gt;&gt;&gt; lineari
 		RedundancyCheck.KEEP_LAST); //if a category appears more than once in the linearization, keep the last found and discard the previous ones.
 JGum jgum = new JGum(linearizationFunction);</pre></p>
         
-  The previous linearization function is the same than the default linearization function for type categories: right to left search, looking at interfaces first.
+  The previous linearization function is the same as the default linearization function for type categories: right to left search, looking at interfaces first.
   
   Alternatively, we could have configured a different linearization function, say a left to right search, looking at classes first:
   
@@ -451,8 +451,8 @@ Category child = new Category(asList(parent1, parent2)); //child inherits from b
 		
 //setting properties
 grandFather.setProperty("p1", "x"); //setting property "p1" to "x" in grandFather
-parent1.setProperty("p1", "y"); //overridden property "p1" as "y" in parent1
-parent2.setProperty("p1", "z"); //overridden property "p1" as "z" in parent2
+parent1.setProperty("p1", "y"); //overriding property "p1" as "y" in parent1
+parent2.setProperty("p1", "z"); //overriding property "p1" as "z" in parent2
 parent2.setProperty("p2", "x"); //setting property "p2" to "x" in parent2
 		
 //testing
@@ -486,7 +486,7 @@ jgum.register("my-categorization", mySimpleCategorization);</pre></p>
   <h3>Alternative Conflict Resolution Mechanisms</h3>
   <p>
   As mentioned before, linearization is only one mechanism to solve conflicts in multi-inheritance scenarios. 
-  For example, an alternative mechanism allowing to rename one of the conflictive properties in an descendant type category may be implemented, or somehow given the possibility to the programmer to explicitly decide which inherited property to choose.
+  For example, an alternative mechanism allowing to rename one of the conflictive properties in a descendant type category may be implemented, or somehow given the possibility to the programmer to explicitly decide which inherited property to choose.
   </p>
   
   <p>
@@ -497,7 +497,7 @@ jgum.register("my-categorization", mySimpleCategorization);</pre></p>
   <p>
   A potential performance issue may occur in scenarios with many categories deep in a hierarchy.
   For example, if many of those categories do not contain properties (or only contain properties that are not queried often), the property look up algorithm has to continuously traverse a long list of non interesting nodes.
-  This may be solved adding on each category references not only to its parents, but to the next ancestors actually containing properties.
+  This may be solved by adding to each category references not only to its parents, but to the next ancestors actually containing properties.
   In this line, it may also make sense to implement a sort of indexing based on certain frequently queried properties. In other words, a category may keep a reference to the next category with a particular often-queried property.
   This optimization algorithms may make the querying of properties more efficient despite a small overhead in the addition of new properties.
   </p>
@@ -509,15 +509,15 @@ jgum.register("my-categorization", mySimpleCategorization);</pre></p>
   
   <h2>Conclusions</h2>
 
-  This tutorial has described a lightweight Java library for creating different kind of categorizations: 1) named, 2) type and 3) ad hoc categorizations.
+  This tutorial has described a lightweight Java library for creating different kinds of categorizations: 1) named, 2) type and 3) ad hoc categorizations.
   
   <p>
   Not all the JGum features have been discussed here. Features such as top-down traversing of hierarchies, registration of listeners in categorizations and the description of utility classes facilitating common tasks have been left out for timing constraints. 
   </p>
-  Particularly, top-down search has interesting applications. For example, with JGum is easy to find, given a type categorization, the first implementor of an interface (say using breadth-first search) that has certain desired characteristics (e.g., also implements the <code>Serializable</code> interface). This feature may be described in a next version of this tutorial.
+  Particularly, top-down search has interesting applications. For example, with JGum it is easy to find, given a type categorization, the first implementor of an interface (say using breadth-first search) that has certain desired characteristics (e.g., also implements the <code>Serializable</code> interface). This feature may be described in the next version of this tutorial.
   
    <p>
-  If you are interested to know more about such features, or would like to know how to extend JGum to support other user-defined categorizations, please <a href="#contact" title="Contact the author">contact</a> the author.
+  If you are interested to learn more about such features, or would like to know how to extend JGum to support other user-defined categorizations, please <a href="#contact" title="Contact the author">contact</a> the author.
   </p>
   
   
@@ -539,12 +539,12 @@ jgum.register("my-categorization", mySimpleCategorization);</pre></p>
   &lt;version&gt;0.0.1-alpha-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</pre></p>
 
-  You may also find interesting taking a look to the <a href="../apidocs/index.html">JGum API documentation</a>.
+  You may also find interesting taking a look at the <a href="../apidocs/index.html">JGum API documentation</a>.
 
   <h2 id="contact">Contact</h2>
   
   Constructive feedback and criticism, questions or a wish list can be sent to <em>[uclouvain(dot)be (that symbol for emails) sergio(dot)castro]</em> (inversing the order).
-  Or just write me a line if you want to say hello ! :-)
+  Or just drop me a line if you want to say hello ! :-)
   
 </div> <!-- end of content -->
 
