@@ -79,19 +79,19 @@ WORK IN PROGRESS....
   </p>
   
   JGum provides support for defining complex taxonomies of categories into a particular context.
-  With JGum, a programmer can define and manipulate ad hoc categorizations, as well as easily create categories based on existing Java categorization mechanisms, such as classes and packages.
+  With JGum, a programmer can define and manipulate ad hoc categorizations, as well as easily organize categories relying on existing Java categorization mechanisms, such as classes and packages.
   
 
   <h2>Having Fun with Categories (or a Short Introduction to <a href="http://logging.apache.org/log4j/1.2/" title="Apache log4j">log4j</a>)</h2>
   
-  This section illustrates typical usage of custom categories in every day programming by means of reviewing common logging practices using a well known Java library.
+  This section illustrates a typical usage of custom categories in every day programming by means of reviewing common logging practices using a well known Java library.
   
   <h3 id="log4j-named-hierarchies">Named Hierarchies</h3>
 
   Popular logging libraries such as <a href="http://logging.apache.org/log4j/1.2/" title="Apache log4j">log4j</a> allow fine grained control on which kind of logging message (e.g., warning or error) should be processed at runtime.
   This control is enabled since programmers can easily categorize a <q>logging space</q> <sup> <a rel="footnote" href="#fn:apache-manual">3</a> </sup> according to some developer-chosen criteria.
   
-  Loggers are organized hierarchically following a naming rule. For example, a logger named <code>org</code> is the parent of a logger named <code>org.jgum</code>, and the ancestor of a logger named <code>org.jgum.JGum</code>.
+  Loggers are organized hierarchically following a naming rule. For example, a logger named <code>"org"</code> is the parent of a logger named <code>"org.jgum"</code>, and the ancestor of a logger named <code>"org.jgum.JGum"</code>.
   If a logger property (e.g., a logging <code>level</code>) is not defined for a given logger, it should be resolved according to the corresponding property value of its parent.
   
   <p/>
@@ -158,7 +158,7 @@ log4j.logger.org.jgum=WARN</pre></p>
   </div>
   
 
-  Therefore, this categorization relies on an existing categorization (a hierarchy of classes) already provided by the language. 
+  Therefore, this categorization relies on an existing categorization already provided by the language (a hierarchy of classes). 
   As in the previous categorization based on named hierarchies, JGum factorizes out this categorization pattern as a general mechanism to associate properties to classes and interfaces.
   As before, this association is limited to the scope of a certain context.
   
@@ -167,7 +167,7 @@ log4j.logger.org.jgum=WARN</pre></p>
   
   JGum allows to create and maintain categorizations associated with a context.
   A JGum context can be regarded as a a register for named categorizations and a store of preferences.
-  A new <a href="../apidocs/org/jgum/JGum.html">JGum context</a> can be instantiated as follows:
+  A default <a href="../apidocs/org/jgum/JGum.html">JGum context</a> can be instantiated as follows:
 
   <p><pre data-editor="java" data-show-gutter="true">
 JGum jgum = new JGum();</pre></p>
@@ -326,7 +326,7 @@ public class Fish extends Animal {}</pre></p>
   This is because JGum type categorizations considere, in many aspects, both classes and interfaces as same-level categorization units.
   </p>
   
-  The figure also shows some properties (renderers) associated with type categories.
+  The figure also shows some properties (renderers) of two type categories.
   In order to associate those renderers to the categories <code>Animal</code> and <code>HasLegs</code>, we can write:
   
   <p><pre data-editor="java" data-show-gutter="true">
@@ -367,9 +367,9 @@ assertEquals(AnimalRenderer.class, fishCategory.getProperty(ObjectRenderer.class
   </div>
   
   <p>
-  The linearization function first find this resolution order (right-first depth-first search): 
-  <code>[Cat, FourLegged, HasLegs, Any, Furry, Any, Animal, Object, Any]</code> which is reduced down to <code>[Cat, FourLegged, HasLegs, Furry, Animal, Object, Any]</code> (eliminating all but the last occurrence).
-  As the figure shows, this algorithm has the particularity that an ancestor category will not be reached until all the descendants leading to it has been explored.
+  The linearization function first finds this resolution order (right-first depth-first search): 
+  <code>[Cat, FourLegged, HasLegs, Any, Furry, Any, Animal, Object, Any]</code> which is reduced down to <code>[Cat, FourLegged, HasLegs, Furry, Animal, Object, Any]</code> (eliminating all but the last occurrence of a redundant category).
+  As the figure shows, this algorithm has the particularity that an ancestor category will not be reached until all the descendants leading to it have been explored.
   </p>
   
   <p>
@@ -382,8 +382,8 @@ TypeCategory&lt;?&gt; catCategory = jgum.forClass(Cat.class); //type category fo
 assertEquals(HasLegsRenderer.class, catCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is HasLegsRenderer for Cat</pre></p>
 
 
-  Given that a linearization function may be not that trivial to implement, JGum provides simple abstractions for creating some functions from a set of parameters.
-  For example, if we want to explicitly associate a linearization function with a JGum context we can write:
+  Given that a custom linearization function may be not that trivial to implement, JGum provides simple abstractions for creating those functions from a set of parameters.
+  In order to associate a type linearization function with a JGum context we can write:
   
       <p><pre data-editor="java" data-show-gutter="true">
 Function&lt;TypeCategory&lt;?&gt;, List&lt;TypeCategory&lt;?&gt;&gt;&gt; linearizationFunction = 
