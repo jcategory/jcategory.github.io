@@ -265,24 +265,28 @@ assertFalse(jgum.forClass(Object.class).getProperty(ObjectRenderer.class).isPres
   
   <h2>Dealing with Multi-Inheritance</h2>
 
-  Previous examples illustrates categories inheriting the properties of a single parent category, creating tree-structured category hierarchies.
-  However, other categories may be better modelled as inheriting from more than one single parent <sup> <a rel="footnote" href="#fn:meyer">5</a> </sup>. 
-  Although powerful in expresiveness, multi-inheritance introduces many conceptual and technical problems <sup> <a rel="footnote" href="#fn:inheritance">6</a> </sup>. 
+  <p>
+  Previous examples showed categories inheriting the properties of a single parent category, creating tree-structured category hierarchies.
+  However, other categories may be better modelled as inheriting from more than one single parent. 
+  Although powerful in expresiveness <sup> <a rel="footnote" href="#fn:meyer">5</a> </sup>, multi-inheritance introduces many conceptual and technical problems <sup> <a rel="footnote" href="#fn:inheritance">6</a> </sup>. 
+  </p>
   
+  <p>
   The following section illustrates this with one common problematic scenario in multi-inheritance categorizations.
+  </p>
   
   <h3>The Diamond Inheritance Problem</h3>
 
-  The figure below illustrates a problem referred as <q>diamond inheritance</q> <sup> <a rel="footnote" href="#fn:diamond-inheritance">7</a> </sup> with a simple example.
+  The figure below illustrates a known problem referred as <q>diamond inheritance</q> <sup> <a rel="footnote" href="#fn:diamond-inheritance">7</a> </sup> with a simple example.
   Categories <code>B</code> and <code>C</code> inherits from <code>A</code>. They define different values for the property <code>p</code>.
-  If category <code>D</code> inherits from both <code>B</code> and <code>C</code>, the value of this property in <code>D</code> is ambiguous.
+  If category <code>D</code> inherits from both <code>B</code> and <code>C</code>, the value of the property <code>p</code> is ambiguous in <code>D</code> .
 
   <div class="divImg">
     <img src="img/diamond_inheritance.svg" alt="Diamond inheritance." style="padding-bottom:0.5em;" width="369" height="208" />
     <div id="imglabel:diamond_inheritance">Fig 3. - Diamond inheritance.</div>
   </div>
 
-  Although there are many different mechanisms to solve this kind of multi-inheritance problem, unfortunately there is not a perfect one-fit-all solution<sup> <a rel="footnote" href="#fn:name-collision">8</a> </sup>.
+  Although there are many different alternatives to solve conflicts for ambiguous properties, unfortunately there is not a perfect one-fit-all solution <sup> <a rel="footnote" href="#fn:name-collision">8</a> </sup>.
   
   The following section illustrates the approach followed by JGum.
   
@@ -290,7 +294,7 @@ assertFalse(jgum.forClass(Object.class).getProperty(ObjectRenderer.class).isPres
   
   Linearization is a common approach for solving multi-inheritance conflicts <sup> <a rel="footnote" href="#fn:linearization">9</a> </sup>.
   
-  In order to illustrate this approach, let's considere the following classes and interfaces defining a taxonomy of animals.
+  In order to illustrate this approach, let's considere the following classes and interfaces defining a taxonomy of animals (example adapted from a popular Scala book <sup> <a rel="footnote" href="#fn:scala-book">10</a> </sup>) :
 
 <p><pre data-editor="java" data-show-gutter="true">
 public class Animal {}
@@ -314,26 +318,26 @@ public class Fish extends Animal {}</pre></p>
   
     <p>
   First note that JGum adds the special class <code>Any</code> at the root of the hierarchy.
-  This design decision allows to have a common root for both class and interface type categories and this presents various advantages. One of those is being able to set global properties that are inherited by any class in the hierarchy.
+  This design decision allows to have a common root for both <a href="../apidocs/org/jgum/category/type/ClassCategory.html">class</a> and <a href="../apidocs/org/jgum/category/type/InterfaceCategory.html">interface</a> type categories and this presents various advantages. One of those is being able to set global properties that are inherited by both class and interface categories in the hierarchy.
   </p>
   
   <p>
-  Also observe that although in Java there is not really multi-inheritance (at least at the time of writing), we have created a multi-inheritance type categorization based on the Java class hierarchy. 
-  This is because JGum typed categorizations considere, in many aspects, both classes and interfaces as same-range categorization units.
+  Also observe that although in Java there is not really multi-inheritance (at least not at the time of writing), we have created a multi-inheritance type categorization based on the Java class hierarchy. 
+  This is because JGum type categorizations considere, in many aspects, both classes and interfaces as same-level categorization units.
   </p>
   
-  The figure also illustrates that some classes are associated with renderer properties.
-  In order to associate those renderers to the type categories <code>Animal</code> and <code>HasLegs</code>, we can write:
+  The figure also shows some properties (renderers) associated with type categories.
+  In order to associate those renderers to the categories <code>Animal</code> and <code>HasLegs</code>, we can write:
   
   <p><pre data-editor="java" data-show-gutter="true">
 JGum jgum = new JGum();
 TypeCategory&lt;?&gt; animalCategory = jgum.forClass(Animal.class); //type category for Animal
 TypeCategory&lt;?&gt; hasLegsCategory = jgum.forClass(HasLegs.class); //type category for HasLegs
-animalCategory.setProperty(ObjectRenderer.class, AnimalRenderer.class); //ObjectRenderer property is AnimalRenderer for Animal
-hasLegsCategory.setProperty(ObjectRenderer.class, HasLegsRenderer.class); //ObjectRenderer property is HasLegsRenderer for HasLegs</pre></p>
+animalCategory.setProperty(ObjectRenderer.class, AnimalRenderer.class); //setting property ObjectRenderer to AnimalRenderer in Animal
+hasLegsCategory.setProperty(ObjectRenderer.class, HasLegsRenderer.class); //setting property ObjectRenderer to HasLegsRenderer in HasLegs</pre></p>
 
-  This scenario provides for both non-conflictive and conflictive property resolution problems.
-  In the simplest case, let's considere we would like to query the render property for the type category <code>Fish</code>.
+  This example provides for both non-conflictive and conflictive property resolution scenarios.
+  In the simplest case, let's considere we would like to query the render property for the <code>Fish</code> category.
   Since there is only single inheritance in the category hierarchy of <code>Fish</code>, its renderer is trivially found from the first ancestor defining such property (i.e., <code>Animal</code>), as the following test illustrates:
   
     <p><pre data-editor="java" data-show-gutter="true">
@@ -341,23 +345,36 @@ hasLegsCategory.setProperty(ObjectRenderer.class, HasLegsRenderer.class); //Obje
 TypeCategory&lt;?&gt; fishCategory = jgum.forClass(Fish.class); //type category for Fish
 assertEquals(AnimalRenderer.class, fishCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is AnimalRenderer for Fish</pre></p>
   
-  However, if we ask which is the appropriate renderer for instances of <code>Cat</code>, different property resolution strategies will answer different values.
-  For example, some may think that categories from implemented interfaces should be looked up first. In this case <code>HasLegRenderer</code> should be returned.
-  Others may prefer to query first categories corresponding super classes. In that case <code>AnimalRenderer</code> should be returned.
+  <p>
+  However, if we ask which is the appropriate renderer for instances of <code>Cat</code>, different property resolution strategies may answer different values.
+  For example, some may think that categories from super interfaces should be looked up first. In this case <code>HasLegRenderer</code> should be returned.
+  Others may prefer to query first categories corresponding to the super class. In that case <code>AnimalRenderer</code> should be returned.
+  </p>
   
+  <p>
   Linearization helps to solve this conflict unambiguously defining a lineal order in which (super-)categories should be visited when querying a property.
+  In JGum, linearization is considered a function mapping a category to a list of categories creating a search path.
+  </p>
   
-  The default type linearization function is inspired by the linearization function used by Scala <a rel="footnote" href="#fn:scala">10</a> </sup>.
-  Therefore, JGum uses a right-first depth-first search, and eliminates all but the last occurrence of each category in the resulting list.
+  The default JGum type linearization function is inspired by the linearization function used by Scala <sup> <a rel="footnote" href="#fn:scala">11</a> </sup> when solving conflicts between classes and traits.
+  Therefore, JGum uses a right-first depth-first search, before eliminating all but the last occurrence of each category in the resulting list.
   
-  Figure 5 illustrates the lookup order of a property starting from the category <code>Cat</code>.
+  Figure 5 illustrates the resolution order of a property starting from the category <code>Cat</code>.
   
   <div class="divImg">
     <img src="img/animal_hierarchy_linearization1.svg" alt="Linearization: traversing interfaces first." style="padding-bottom:0.5em;" width="559" height="250" />
     <div id="imglabel:animal_hierarchy_linearization1" >Fig 5. - Linearization: Right to left (interfaces first).</div>
   </div>
   
-  As the figure shows, this algorithm has the advantage that an ancestor category will not be reached until all the desdendants leading to it has been explored.
+  <p>
+  The linearization function first find this resolution order (right-first depth-first search): 
+  <code>[Cat, FourLegged, HasLegs, Any, Furry, Any, Animal, Object, Any]</code> which is reduced down to <code>[Cat, FourLegged, HasLegs, Furry, Animal, Object, Any]</code> (eliminating all but the last occurrence).
+  As the figure shows, this algorithm has the particularity that an ancestor category will not be reached until all the descendants leading to it has been explored.
+  </p>
+  
+  <p>
+  The following example verifies that the <code>ObjectRenderer</code> property is <code>HasLegsRenderer</code> for <code>Cat</code>, according to our default linearization function:
+  </p>
   
     <p><pre data-editor="java" data-show-gutter="true">
 ...	
@@ -365,7 +382,8 @@ TypeCategory&lt;?&gt; catCategory = jgum.forClass(Cat.class); //type category fo
 assertEquals(HasLegsRenderer.class, catCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is HasLegsRenderer for Cat</pre></p>
 
 
-  We can explicitly configure the linearization function with the following code:
+  Given that a linearization function may be not that trivial to implement, JGum provides simple abstractions for creating some functions from a set of parameters.
+  For example, if we want to explicitly associate a linearization function with a JGum context we can write:
   
       <p><pre data-editor="java" data-show-gutter="true">
 Function&lt;TypeCategory&lt;?&gt;, List&lt;TypeCategory&lt;?&gt;&gt;&gt; linearizationFunction = 
@@ -376,8 +394,9 @@ Function&lt;TypeCategory&lt;?&gt;, List&lt;TypeCategory&lt;?&gt;&gt;&gt; lineari
 		RedundancyCheck.KEEP_LAST); //if a category appears more than once in the linearization, keep the last found and discard the previous ones.
 JGum jgum = new JGum(linearizationFunction);</pre></p>
         
-        
-  Alternatively, we could have configured a different linearization function, that look first at classes and then at interfaces:
+  The previous linearization function is the same than the default linearization function for type categories: right to left search, looking at interfaces first.
+  
+  Alternatively, we could have configured a different linearization function, say a left to right search, looking at classes first:
   
       <p><pre data-editor="java" data-show-gutter="true">
 Function&lt;TypeCategory&lt;?&gt;, List&lt;TypeCategory&lt;?&gt;&gt;&gt; linearizationFunction = 
@@ -393,7 +412,7 @@ JGum jgum = new JGum(linearizationFunction);</pre></p>
     <div id="imglabel:animal_hierarchy_linearization2" >Fig 6. - Linearization: Left to right (classes first).</div>
   </div>
   
-  In this setting, the renderer for instances of <code>Cat</code> are <code>AnimalRenderer</code>, since it found earlier in the list of categories returned by the linearization function.
+  In this setting, the renderer for instances of <code>Cat</code> is <code>AnimalRenderer</code>, since it is found earlier in the list of categories returned by the linearization function.
 
 	
  
@@ -439,42 +458,43 @@ jgum.register("my-categorization", mySimpleCategorization);</pre></p>
 
   <h2>Limitations and Future Work</h2>
 
-  This section highlights certain limitations of JGum. In certain cases, future work directions to overcome these limitations are also outlined.
+  This section highlights certain limitations of JGum. In certain cases, future work directions to overcome these limitations are outlined.
 
   <h3>Named Categorizations Limitations</h3>
   <p>
-  JGum provides support for only one patter of named categorizations: hierarchies specified by sequence of names separated by dots.
-  However, many other alternatives are possible (e.g., structuring hierarchies based on a numeric pattern present in the name of a named category).
-  The current mechanism was chosen because it is well known and understood.
+  JGum provides support for only one pattern of named categorizations: hierarchies specified by means of category names implicitly containing a list of ancestors using dots as token separator.
+  However, many other alternatives are possible (e.g., structuring hierarchies based on a numeric pattern present in the name of a category).
+  The current mechanism was chosen because it is well known and understood. Other strategies should not be difficult to implement.
   </p>
   
   <h3>Type Categorizations Limitations</h3>
   <p>
-  JGum type categories currently do not take into account existing properties (fields and methods declarations) of the wrapped classes that define a type categorization.
-  Instead, existing classes are just considered category identifiers in type categorizations.
+  JGum type categories currently do not take into consideration implicit reflective properties (e.g., fields and methods declarations) of the wrapped classes that define a type categorization.
+  Instead, existing classes are just considered category identifiers and provide a hierarchical organization for type categorizations.
   This may change in the future if a good use-case appears.
   </p>
   
   <h3>Alternative Conflict Resolution Mechanisms</h3>
   <p>
-  As mentioned before, linearization is only one mechanism to solve conflict in multi-inheritance scenarios. 
-  For example, a mechanism for renaming properties may be implemented in case of conflicts, or somehow given the possibility to the programmer to explicitly choose which inherited property to choose. 
+  As mentioned before, linearization is only one mechanism to solve conflicts in multi-inheritance scenarios. 
+  For example, an alternative mechanism allowing to rename one of the conflictive properties in an descendant type category may be implemented, or somehow given the possibility to the programmer to explicitly decide which inherited property to choose.
   </p>
   
   <p>
-  At the moment, there are no any plans to implement any of these alternative conflict resolution mechanisms since they are not part of the requirements that motivated the implementation of JGum.
+  At the moment, there are no plans to implement any of these alternative conflict resolution mechanisms since they are not part of the requirements that motivated the implementation of JGum.
   </p>
   
   <h3>Performance Issues</h3>
   <p>
-  A potential performance issue may occur in scenarios with many categories deep in a hierarchy, with few of those categories actually containing properties.
-  This may be solved in the future adding on each category references not only to its parents, but to the next ancestors actually containing properties.
+  A potential performance issue may occur in scenarios with many categories deep in a hierarchy.
+  For example, if many of those categories do not contain properties (or only contain properties that are not queried often), the property look up algorithm has to continuously traverse a long list of non interesting nodes.
+  This may be solved adding on each category references not only to its parents, but to the next ancestors actually containing properties.
   In this line, it may also make sense to implement a sort of indexing based on certain frequently queried properties. In other words, a category may keep a reference to the next category with a particular often-queried property.
-  This algorithms will make the querying of properties more efficient despite a small overhead in the addition of new properties.
+  This optimization algorithms may make the querying of properties more efficient despite a small overhead in the addition of new properties.
   </p>
   
   <p>
-  Alternatively, for categorizations that do not modify much their properties, it may also make sense to pre-process its categories, in such a way that a category has a local copy of all its inherited properties.
+  Alternatively, for rather static categorizations that do not modify much their properties, it may also make sense to pre-process its categories, in such a way that a category has a local copy of all its inherited properties according to a linearization function.
   </p>
 
   
@@ -484,6 +504,10 @@ jgum.register("my-categorization", mySimpleCategorization);</pre></p>
   
   <p>
   Not all the JGum features have been discussed here. Features such as top-down traversing of hierarchies, registration of listeners in categorizations and the description of utility classes facilitating common tasks have been left out for timing constraints. 
+  </p>
+  Particularly, top-down search has interesting applications. For example, with JGum is easy to find, given a type categorization, the first implementor of an interface (say using breadth-first search) that has certain desired characteristics (e.g., also implements the <code>Serializable</code> interface). This feature may be described in a next version of this tutorial.
+  
+   <p>
   If you are interested to know more about such features, or would like to know how to extend JGum to support other user-defined categorizations, please <a href="#contact" title="Contact the author">contact</a> the author.
   </p>
   
@@ -560,8 +584,12 @@ jgum.register("my-categorization", mySimpleCategorization);</pre></p>
     Proposal for a Monotonic Multiple Inheritance Linearization. Roland Ducournau, Michel Habib, Marianne Huchard, and Marie-Laure Mugnier. OOPSLA, page 164-175. ACM. 1994.
   </li>  
   
-  <li id="fn:scala">
+  <li id="fn:scala-book">
     Programming in Scala. Martin Odersky, Lex Spoon and Bill Venners. Artima Press, Mountain View, CA. 2 edition. January 2011.
+  </li>
+  
+  <li id="fn:scala">
+    An Overview of the Scala Programming Language. Martin Odersky, and al.. IC/2004/64. EPFL Lausanne, Switzerland. 2004.
   </li>
   
   </ol>
