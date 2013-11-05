@@ -434,7 +434,7 @@ JGum jgum = new JGum(linearizationFunction);</pre></p>
 
   Of course, you can always create simple ad hoc categorizations if you do not care about named and type categorizations.
   The example below implements a simple diamond inheritance hierarchy. 
-  Properties are found according to the default linearization algorithm explained in previous sections.
+  For ad hoc categorizations, the default linearization function is depth first, left to right (i.e., following the natural ordering of the parents). Conflicts are solved keeping the last redundant category in the linearization and dropping the rest.
   
     <p><pre data-editor="java" data-show-gutter="true">
 //creating a simple hierarchy
