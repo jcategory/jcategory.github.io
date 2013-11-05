@@ -407,11 +407,15 @@ Function&lt;TypeCategory&lt;?&gt;, List&lt;TypeCategory&lt;?&gt;&gt;&gt; lineari
 		RedundancyCheck.KEEP_LAST); //if a category appears more than once in the linearization, keep the last found and discard the previous ones.
 JGum jgum = new JGum(linearizationFunction);</pre></p>
   
+  Figure 6 illustrates the alternative resolution order defined by our custom linearization function.
+  
   <div class="divImg">
     <img src="img/animal_hierarchy_linearization2.svg" alt="Linearization: traversing classes first." style="padding-bottom:0.5em;" width="559" height="250" />
     <div id="imglabel:animal_hierarchy_linearization2" >Fig 6. - Linearization: Left to right (classes first).</div>
   </div>
   
+  This function first finds this resolution order: 
+  <code>[Cat, Animal, Object, Any, Furry, Any, FourLegged, HasLegs, Any]</code> which is reduced down to <code>[Cat, Animal, Object, Furry, FourLegged, HasLegs, Any]</code>.
   In this setting, the renderer for instances of <code>Cat</code> is <code>AnimalRenderer</code>, since it is found earlier in the list of categories returned by the linearization function.
 
 	
