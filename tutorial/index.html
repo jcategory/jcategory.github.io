@@ -54,16 +54,11 @@
 
 <h1>JGum User Guide</h1>
 
-<!--
-WORK IN PROGRESS....
--->
 
 <div id="table_of_content">
   <strong>Contents</strong>
   <ol id="table_of_content_entries"></ol>
 </div>
-
-
 
 
 <div id="content">
@@ -361,34 +356,54 @@ assertEquals(AnimalRenderer.class, fishCategory.getProperty(ObjectRenderer.class
   In JGum, linearization is considered a function mapping a category to a list of categories creating a search path.
   </p>
   
-  The default JGum type linearization function is inspired by the linearization function used by Scala <sup> <a rel="footnote" href="#fn:scala">11</a> </sup> when solving conflicts between classes and traits.
-  Therefore, JGum uses a right-first depth-first search, before eliminating all but the last occurrence of each category in the resulting list.
+  The default JGum type linearization function is, to certain extent, inspired by the linearization function used by Scala <sup> <a rel="footnote" href="#fn:scala">11</a> </sup> when solving conflicts between classes and traits.
+  JGum uses a left-first depth-first search, before eliminating all but the last occurrence of each category in the resulting list (the main difference with the Scala algorythm is that the later uses a right-first depth-first search).
   
   Figure 5 illustrates the resolution order of a property starting from the category <code>Cat</code>.
   
-  <div class="divImg">
-    <img src="img/animal_hierarchy_linearization1.svg" alt="Linearization: traversing interfaces first." style="padding-bottom:0.5em;" width="559" height="250" />
-    <div id="imglabel:animal_hierarchy_linearization1" >Fig 5. - Linearization: Right to left (interfaces first).</div>
+  
+    <div class="divImg">
+    <img src="img/animal_hierarchy_linearization2.svg" alt="Linearization: traversing classes first." style="padding-bottom:0.5em;" width="559" height="250" />
+    <div id="imglabel:animal_hierarchy_linearization2" >Fig 5. - Linearization: Left to right (classes first).</div>
   </div>
   
+  
   <p>
-  The linearization function first finds this resolution order (right-first depth-first search): 
-  <code>[Cat, FourLegged, HasLegs, Any, Furry, Any, Animal, Object, Any]</code> which is reduced down to <code>[Cat, FourLegged, HasLegs, Furry, Animal, Object, Any]</code> (eliminating all but the last occurrence of a redundant category).
+  The linearization function first finds this resolution order (left-first depth-first search): 
+  <code>[Cat, Animal, Object, Any, Furry, Any, FourLegged, HasLegs, Any]</code>
+  which is reduced down to:
+  <code>[Cat, Animal, Object, Furry, FourLegged, HasLegs, Any]</code> (eliminating all but the last occurrence of a redundant category).
+  
+
   As the figure shows, this algorithm has the particularity that an ancestor category will not be reached until all the descendants leading to it have been explored.
   </p>
   
   <p>
-  The following example verifies that the <code>ObjectRenderer</code> property is <code>HasLegsRenderer</code> for <code>Cat</code>, according to our default linearization function:
+  The following example verifies that the <code>ObjectRenderer</code> property is <code>AnimalRenderer</code> for <code>Cat</code>, according to our default linearization function:
   </p>
   
     <p><pre data-editor="java" data-show-gutter="true">
 ...	
 TypeCategory&lt;Cat&gt; catCategory = jgum.forClass(Cat.class); //type category for Cat
-assertEquals(HasLegsRenderer.class, catCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is HasLegsRenderer for Cat</pre></p>
+assertEquals(AnimalRenderer.class, catCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is AnimalRenderer for Cat</pre></p>
 
 
   Given that a custom linearization function may be not that trivial to implement, JGum provides simple abstractions for creating those functions from a set of parameters.
   In order to associate a type linearization function with a JGum context we can write:
+  
+        <p><pre data-editor="java" data-show-gutter="true">
+Function&lt;TypeCategory&lt;?&gt;, List&lt;TypeCategory&lt;?&gt;&gt;&gt; linearizationFunction = 
+		new BottomUpTypeTraversalPolicy(
+		SearchStrategy.PRE_ORDER, //pre-order search
+		Priority.CLASSES_FIRST, //look first at classes, then interfaces
+		InterfaceOrder.DECLARATION, //traverse the interfaces from left to right (declaration order)
+		RedundancyCheck.KEEP_LAST); //if a category appears more than once in the linearization, keep the last found and discard the previous ones.
+JGum jgum = new JGum(linearizationFunction);</pre></p>
+
+        
+  The previous linearization function is the same as the default linearization function for type categories: left to right search, looking at classes first.
+  
+  Alternatively, we could have configured a different linearization function, say a right to left search, looking at interfaces first:
   
       <p><pre data-editor="java" data-show-gutter="true">
 Function&lt;TypeCategory&lt;?&gt;, List&lt;TypeCategory&lt;?&gt;&gt;&gt; linearizationFunction = 
@@ -398,30 +413,21 @@ Function&lt;TypeCategory&lt;?&gt;, List&lt;TypeCategory&lt;?&gt;&gt;&gt; lineari
 		InterfaceOrder.REVERSE, //traverse the interfaces from right to left (reverse declaration order)
 		RedundancyCheck.KEEP_LAST); //if a category appears more than once in the linearization, keep the last found and discard the previous ones.
 JGum jgum = new JGum(linearizationFunction);</pre></p>
-        
-  The previous linearization function is the same as the default linearization function for type categories: right to left search, looking at interfaces first.
-  
-  Alternatively, we could have configured a different linearization function, say a left to right search, looking at classes first:
-  
-      <p><pre data-editor="java" data-show-gutter="true">
-Function&lt;TypeCategory&lt;?&gt;, List&lt;TypeCategory&lt;?&gt;&gt;&gt; linearizationFunction = 
-		new BottomUpTypeTraversalPolicy(
-		SearchStrategy.PRE_ORDER, //pre-order search
-		Priority.CLASSES_FIRST, //look first at classes, then interfaces
-		InterfaceOrder.DECLARATION, //traverse the interfaces from left to right (declaration order)
-		RedundancyCheck.KEEP_LAST); //if a category appears more than once in the linearization, keep the last found and discard the previous ones.
-JGum jgum = new JGum(linearizationFunction);</pre></p>
   
   Figure 6 illustrates the alternative resolution order defined by our custom linearization function.
   
+
   <div class="divImg">
-    <img src="img/animal_hierarchy_linearization2.svg" alt="Linearization: traversing classes first." style="padding-bottom:0.5em;" width="559" height="250" />
-    <div id="imglabel:animal_hierarchy_linearization2" >Fig 6. - Linearization: Left to right (classes first).</div>
+    <img src="img/animal_hierarchy_linearization1.svg" alt="Linearization: traversing interfaces first." style="padding-bottom:0.5em;" width="559" height="250" />
+    <div id="imglabel:animal_hierarchy_linearization1" >Fig 6. - Linearization: Right to left (interfaces first).</div>
   </div>
   
+  
   This function first finds this resolution order: 
-  <code>[Cat, Animal, Object, Any, Furry, Any, FourLegged, HasLegs, Any]</code> which is reduced down to <code>[Cat, Animal, Object, Furry, FourLegged, HasLegs, Any]</code>.
-  In this setting, the renderer for instances of <code>Cat</code> is <code>AnimalRenderer</code>, since it is found earlier in the list of categories returned by the linearization function.
+  <code>[Cat, FourLegged, HasLegs, Any, Furry, Any, Animal, Object, Any]</code>
+   which is reduced down to:
+   <code>[Cat, FourLegged, HasLegs, Furry, Animal, Object, Any]</code>.
+  In this setting, the renderer for instances of <code>Cat</code> is <code>HasLegsRenderer</code>, since it is found earlier in the list of categories returned by the linearization function.
 
 	
  
@@ -437,10 +443,13 @@ JGum jgum = new JGum(linearizationFunction);</pre></p>
 
   <h2>Ad Hoc Categorizations</h2>
 
+  <p>
   Of course, you can always create simple ad hoc categorizations if you do not care about named and type categorizations.
-  The example below implements a simple diamond inheritance hierarchy. 
-  For ad hoc categorizations, the default linearization function is depth first, left to right (i.e., following the natural ordering of the parents). Conflicts are solved keeping the last redundant category in the linearization and dropping the rest.
+  For ad hoc categorizations, the default linearization function makes use of a left-first depth-first search. Conflicts are solved keeping the last redundant category in the linearization and dropping the rest.
+  </p>
   
+  The example below implements a simple diamond inheritance hierarchy. 
+    
     <p><pre data-editor="java" data-show-gutter="true">
 //creating a simple hierarchy
 Categorization mySimpleCategorization = new Categorization();
