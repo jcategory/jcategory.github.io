@@ -253,8 +253,8 @@ public class FruitRenderer implements ObjectRenderer {
 
   <p><pre data-editor="java" data-show-gutter="true">
 JGum jgum = new JGum();
-TypeCategory&lt;?&gt; fruitCategory = jgum.forClass(Fruit.class); //type category for Fruit
-TypeCategory&lt;?&gt; orangeCategory = jgum.forClass(Orange.class); //type category for Orange
+TypeCategory&lt;Fruit&gt; fruitCategory = jgum.forClass(Fruit.class); //type category for Fruit
+TypeCategory&lt;Orange&gt; orangeCategory = jgum.forClass(Orange.class); //type category for Orange
 fruitCategory.setProperty(ObjectRenderer.class, FruitRenderer.class); //ObjectRenderer property set to FruitRenderer for Fruit
 assertEquals(FruitRenderer.class, fruitCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is FruitRenderers for Fruit
 assertEquals(FruitRenderer.class, orangeCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is also FruitRenderer for Orange
@@ -336,8 +336,8 @@ public class Fish extends Animal {}</pre></p>
   
   <p><pre data-editor="java" data-show-gutter="true">
 JGum jgum = new JGum();
-TypeCategory&lt;?&gt; animalCategory = jgum.forClass(Animal.class); //type category for Animal
-TypeCategory&lt;?&gt; hasLegsCategory = jgum.forClass(HasLegs.class); //type category for HasLegs
+TypeCategory&lt;Animal&gt; animalCategory = jgum.forClass(Animal.class); //type category for Animal
+TypeCategory&lt;HasLegs&gt; hasLegsCategory = jgum.forClass(HasLegs.class); //type category for HasLegs
 animalCategory.setProperty(ObjectRenderer.class, AnimalRenderer.class); //setting property ObjectRenderer to AnimalRenderer in Animal
 hasLegsCategory.setProperty(ObjectRenderer.class, HasLegsRenderer.class); //setting property ObjectRenderer to HasLegsRenderer in HasLegs</pre></p>
 
@@ -347,7 +347,7 @@ hasLegsCategory.setProperty(ObjectRenderer.class, HasLegsRenderer.class); //sett
   
     <p><pre data-editor="java" data-show-gutter="true">
 ...
-TypeCategory&lt;?&gt; fishCategory = jgum.forClass(Fish.class); //type category for Fish
+TypeCategory&lt;Fish&gt; fishCategory = jgum.forClass(Fish.class); //type category for Fish
 assertEquals(AnimalRenderer.class, fishCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is AnimalRenderer for Fish</pre></p>
   
   <p>
@@ -383,7 +383,7 @@ assertEquals(AnimalRenderer.class, fishCategory.getProperty(ObjectRenderer.class
   
     <p><pre data-editor="java" data-show-gutter="true">
 ...	
-TypeCategory&lt;?&gt; catCategory = jgum.forClass(Cat.class); //type category for Cat
+TypeCategory&lt;Cat&gt; catCategory = jgum.forClass(Cat.class); //type category for Cat
 assertEquals(HasLegsRenderer.class, catCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is HasLegsRenderer for Cat</pre></p>
 
 
