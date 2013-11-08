@@ -2,4 +2,5 @@ org.jgum
 org.jgum.category
 org.jgum.category.named
 org.jgum.category.type
+org.jgum.strategy
 org.jgum.traversal
