@@ -521,7 +521,7 @@ ObjectRenderer renderer = catCategory.getStrategy(ObjectRenderer.class);
 assertEquals("animal", renderer.doRender(new Cat()));</pre></p>
 
     <p>
-    Finally, in case a strategy requires to delegate to the next strategy in the chain of responsibility, it just needs to throw a <a href="../apidocs/org/jgum/category/NoMyResponsibilityException.html" title="NoMyResponsibilityException class">NoMyResponsibilityException</a> exception.
+    Finally, in case a strategy requires to delegate to the next strategy in the chain of responsibility, it just needs to throw a <a href="../apidocs/org/jgum/strategy/NoMyResponsibilityException.html" title="NoMyResponsibilityException class">NoMyResponsibilityException</a> exception.
     If this happens, the next strategy in the chain will be employed. If all the strategies in the chain are exhausted, a <code>NoMyResponsibilityException</code> exception is thrown to the caller.
     </p>
     
