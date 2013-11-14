@@ -189,7 +189,7 @@ jgum.getCategorization("my-categorization"); //retrieving the categorization ide
     Therefore, categories define parents-children relationships with other categories.
   
     <p>JGum categories may be associated with an identifying <a href="../apidocs/org/jgum/category/LabeledCategory.html">label</a>. 
-    According to the chosen categorization, this label may determine the position of the category in a hierarchy (e.g., <a href="#log4j-named-hierarchies">named hierarchies</a>), or just serve as a human aid facilitating reasoning over the category and its instances  <sup> <a rel="footnote" href="#fn:categories-matter">4</a> </sup>.
+    According to the chosen categorization, this label may determine the position of the category in a hierarchy (e.g., <a href="#log4j-named-hierarchies">named hierarchies</a>), or just serve as a human aid facilitating reasoning over the category and its extension <sup> <a rel="footnote" href="#fn:categories-matter">4</a> </sup>.
     </p>
   
     <p>
@@ -210,7 +210,7 @@ jgum.getCategorization("my-categorization"); //retrieving the categorization ide
     </p>
 
     <p><pre data-editor="java" data-show-gutter="true">
-final String LEVEL = "level";
+final Key LEVEL = new Key("level"); //the property identifier
 JGum jgum = new JGum();
 NamedCategory parent = jgum.forPackage(JGum.class.getPackage()); //named category for "org.jum"
 NamedCategory child = jgum.forName(JGum.class.getName()); //named category for "org.jum.JGum"
@@ -244,19 +244,20 @@ public class FruitRenderer implements ObjectRenderer {
     The code below shows how the categorization illustrated in our <a rel="footnote" href="#imglabel:log4j_type_properties">rendering example</a> can be implemented in few lines of code.
 
     <p><pre data-editor="java" data-show-gutter="true">
+final Key OBJECT_RENDERER_KEY = new Key(ObjectRenderer.class); //the property identifier
 JGum jgum = new JGum();
 TypeCategory&lt;Fruit&gt; fruitCategory = jgum.forClass(Fruit.class); //type category for Fruit
 TypeCategory&lt;Orange&gt; orangeCategory = jgum.forClass(Orange.class); //type category for Orange
-fruitCategory.setProperty(ObjectRenderer.class, FruitRenderer.class); //ObjectRenderer property set to FruitRenderer for Fruit
-assertEquals(FruitRenderer.class, fruitCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is FruitRenderers for Fruit
-assertEquals(FruitRenderer.class, orangeCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is also FruitRenderer for Orange
-assertFalse(jgum.forClass(Object.class).getProperty(ObjectRenderer.class).isPresent()); //ObjectRenderer property has not been set for Object</pre></p>
+fruitCategory.setProperty(OBJECT_RENDERER_KEY, FruitRenderer.class); //ObjectRenderer property set to FruitRenderer for Fruit
+assertEquals(FruitRenderer.class, fruitCategory.getProperty(OBJECT_RENDERER_KEY).get()); //ObjectRenderer property is FruitRenderers for Fruit
+assertEquals(FruitRenderer.class, orangeCategory.getProperty(OBJECT_RENDERER_KEY).get()); //ObjectRenderer property is also FruitRenderer for Orange
+assertFalse(jgum.forClass(Object.class).getProperty(OBJECT_RENDERER_KEY).isPresent()); //ObjectRenderer property has not been set for Object</pre></p>
 
     <p>
-    First we obtain categories corresponding to the classes <code>Fruit</code> (line 2) and <code>Orange</code> (line 3). 
-    Note that a property identifier can be any object, in this case it is a class (<code>ObjectRenderer.class</code>). 
-    We set the <code>ObjectRenderer</code> property to <code>FruitRenderer</code> in the <code>Fruit</code> category (line 4). We verify that the property is set for both this category (line 5) and a child category that should inherit that property (line 6).
-    In line 7 we verify that the property is undefined for the category <code>Object</code>, since it is an ancestor of the only category defining this property.
+    First we obtain categories corresponding to the classes <code>Fruit</code> (line 3) and <code>Orange</code> (line 4). 
+    Note that a <a href="../apidocs/org/jgum/category/Key.html">property identifier</a> can be any object, in this case the property is identified by the <code>ObjectRenderer</code> class (line 1). 
+    We set the <code>ObjectRenderer</code> property to <code>FruitRenderer</code> in the <code>Fruit</code> category (line 5). We verify that the property is set for both this category (line 6) and a child category that should inherit that property (line 7).
+    In line 8 we verify that the property is undefined for the category <code>Object</code>, since it is an ancestor of the only category defining this property.
     </p>
   
   
@@ -327,11 +328,12 @@ public class Fish extends Animal {}</pre></p>
     In order to associate those renderers with the categories <code>Animal</code> and <code>HasLegs</code>, we can write:
   
     <p><pre data-editor="java" data-show-gutter="true">
+final Key OBJECT_RENDERER_KEY = new Key(ObjectRenderer.class);
 JGum jgum = new JGum();
 TypeCategory&lt;Animal&gt; animalCategory = jgum.forClass(Animal.class); //type category for Animal
 TypeCategory&lt;HasLegs&gt; hasLegsCategory = jgum.forClass(HasLegs.class); //type category for HasLegs
-animalCategory.setProperty(ObjectRenderer.class, AnimalRenderer.class); //setting property ObjectRenderer to AnimalRenderer in Animal
-hasLegsCategory.setProperty(ObjectRenderer.class, HasLegsRenderer.class); //setting property ObjectRenderer to HasLegsRenderer in HasLegs</pre></p>
+animalCategory.setProperty(OBJECT_RENDERER_KEY, AnimalRenderer.class); //setting property ObjectRenderer to AnimalRenderer in Animal
+hasLegsCategory.setProperty(OBJECT_RENDERER_KEY, HasLegsRenderer.class); //setting property ObjectRenderer to HasLegsRenderer in HasLegs</pre></p>
 
     This example provides for both non-conflictive and conflictive property resolution scenarios.
     In the simplest case, let's consider we would like to query the render property for the <code>Fish</code> category.
@@ -340,7 +342,7 @@ hasLegsCategory.setProperty(ObjectRenderer.class, HasLegsRenderer.class); //sett
     <p><pre data-editor="java" data-show-gutter="true">
 ...
 TypeCategory&lt;Fish&gt; fishCategory = jgum.forClass(Fish.class); //type category for Fish
-assertEquals(AnimalRenderer.class, fishCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is AnimalRenderer for Fish</pre></p>
+assertEquals(AnimalRenderer.class, fishCategory.getProperty(OBJECT_RENDERER_KEY).get()); //ObjectRenderer property is AnimalRenderer for Fish</pre></p>
   
     <p>
     However, if we ask which is the appropriate renderer for instances of <code>Cat</code>, different property resolution strategies may result in different values.
@@ -381,7 +383,7 @@ assertEquals(AnimalRenderer.class, fishCategory.getProperty(ObjectRenderer.class
     <p><pre data-editor="java" data-show-gutter="true">
 ...	
 TypeCategory&lt;Cat&gt; catCategory = jgum.forClass(Cat.class); //type category for Cat
-assertEquals(AnimalRenderer.class, catCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is AnimalRenderer for Cat</pre></p>
+assertEquals(AnimalRenderer.class, catCategory.getProperty(OBJECT_RENDERER_KEY).get()); //ObjectRenderer property is AnimalRenderer for Cat</pre></p>
 
 
     Given that a custom linearization function may be not that trivial to implement, JGum provides simple abstractions for creating those functions from a set of parameters.
@@ -448,14 +450,16 @@ Category parent2 = new Category(asList(grandFather)); //parent2 also inherits fr
 Category child = new Category(asList(parent1, parent2)); //child inherits from both parent1 and parent2
 		
 //setting properties
-grandFather.setProperty("p1", "x"); //setting property "p1" to "x" in grandFather
-parent1.setProperty("p1", "y"); //overriding property "p1" as "y" in parent1
-parent2.setProperty("p1", "z"); //overriding property "p1" as "z" in parent2
-parent2.setProperty("p2", "x"); //setting property "p2" to "x" in parent2
+Key p1 = new Key("p1");
+Key p2 = new Key("p2");
+grandFather.setProperty(p1, "x"); //setting property "p1" to "x" in grandFather
+parent1.setProperty(p1, "y"); //overriding property "p1" as "y" in parent1
+parent2.setProperty(p1, "z"); //overriding property "p1" as "z" in parent2
+parent2.setProperty(p2, "x"); //setting property "p2" to "x" in parent2
 		
 //testing
-assertEquals("y", child.getProperty("p1").get()); //"p1" property found in parent1
-assertEquals("x", child.getProperty("p2").get()); //"p2" property found in parent2
+assertEquals("y", child.getProperty(p1).get()); //p1 property found in parent1
+assertEquals("x", child.getProperty(p2).get()); //p2 property found in parent2
 		
 //optionally registering the previous categorization in a JGum context
 JGum jgum = new JGum();
@@ -495,6 +499,7 @@ public class HasLegsRenderer implements ObjectRenderer {
     For this example, we will make use of type categories to associate classes with <em>instances</em> of our renderers, as it is showed in the example below:
 
     <p><pre data-editor="java" data-show-gutter="true">
+final Key OBJECT_RENDERER_KEY = new Key(ObjectRenderer.class);
 JGum jgum = new JGum();
 //instantiating categories
 TypeCategory<Animal> animalCategory = jgum.forClass(Animal.class); //type category for Animal
@@ -502,8 +507,8 @@ TypeCategory<HasLegs> hasLegsCategory = jgum.forClass(HasLegs.class); //type cat
 TypeCategory<Cat> catCategory = jgum.forClass(Cat.class); //type category for Cat
 		
 //setting properties
-animalCategory.setProperty(ObjectRenderer.class, new AnimalRenderer()); //ObjectRenderer property is an instance of AnimalRenderer for Animal
-hasLegsCategory.setProperty(ObjectRenderer.class, new HasLegsRenderer()); //ObjectRenderer property is an instance of HasLegsRenderer for HasLegs</pre></p>
+animalCategory.setProperty(OBJECT_RENDERER_KEY, new AnimalRenderer()); //ObjectRenderer property is an instance of AnimalRenderer for Animal
+hasLegsCategory.setProperty(OBJECT_RENDERER_KEY, new HasLegsRenderer()); //ObjectRenderer property is an instance of HasLegsRenderer for HasLegs</pre></p>
 
     <p>
     We can obtain an instance of a strategy by means of the <a href="../apidocs/org/jgum/category/Category.html#getStrategy(java.lang.Class)" title="getStrategy() method">getStrategy()</a> method in the <a href="../apidocs/org/jgum/category/Category.html" title="Category class">Category</a> class.
@@ -544,7 +549,7 @@ class DelegationAnimalRenderer implements ObjectRenderer {
     <p><pre data-editor="java" data-show-gutter="true">
 ...
 //overridding property
-animalCategory.setProperty(ObjectRenderer.class, new DelegationAnimalRenderer()); //ObjectRenderer property is an instance of DelegationAnimalRenderer for Animal
+animalCategory.setProperty(OBJECT_RENDERER_KEY, new DelegationAnimalRenderer()); //ObjectRenderer property is an instance of DelegationAnimalRenderer for Animal
 //testing
 ObjectRenderer renderer = catCategory.getStrategy(ObjectRenderer.class);
 assertEquals("has-legs", renderer.doRender(new Cat()));</pre></p>
