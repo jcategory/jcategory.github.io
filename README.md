@@ -1,4 +1,4 @@
 jgum.github.io
 ==============
 
-JGum documentation
+[JGum website](http://jgum.github.com/ "JGum website").
