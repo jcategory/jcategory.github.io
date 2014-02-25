@@ -320,13 +320,13 @@ public class Fish extends Animal {}</pre></p>
     </p>
   
     <p>
-    Also observe that although in Java there is not really multi-inheritance (at least not at the time of writing), we have created a multi-inheritance type categorization based on the Java class hierarchy. 
-    This is because JGum type categorizations consider, in many aspects, both classes and interfaces as same-level categorization units.
+	The figure also illustrates a type-based categorization of renderers according to this class hierarchy (note the <code>renderer</code> property associated to certain classes).
+	Observe that JGum considers, in many aspects, both classes and interfaces as same-level categorization units.
+	For example, one of the two renderers shown in the figure (<code>AnimalRenderer</code>) is a property of the <code>Animal</code> class.
+	The other (<code>HasLegsRenderer</code>) is a property of the <code>HasLegs</code> interface.
+	In order to associate those renderers with the categories <code>Animal</code> and <code>HasLegs</code>, we can write:
     </p>
-  
-    The figure also shows some properties (renderers) of two type categories.
-    In order to associate those renderers with the categories <code>Animal</code> and <code>HasLegs</code>, we can write:
-  
+
     <p><pre data-editor="java" data-show-gutter="true">
 final Object OBJECT_RENDERER_KEY = ObjectRenderer.class;
 JGum jgum = new JGum();
