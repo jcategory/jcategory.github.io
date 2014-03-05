@@ -164,7 +164,7 @@ log4j.logger.org.jgum=WARN</pre></p>
   
     JGum allows to create and maintain categorizations associated with a context.
     A JGum context can be regarded as a register for categorizations and a store of preferences.
-    A default <a href="../apidocs/org/jgum/JGum.html">JGum context</a> can be instantiated as follows:
+    A default <a href="javadocs/org/jgum/JGum.html">JGum context</a> can be instantiated as follows:
 
     <p><pre data-editor="java" data-show-gutter="true">
 JGum jgum = new JGum();</pre></p>
@@ -184,11 +184,11 @@ jgum.getCategorization("my-categorization"); //retrieving the categorization ide
   <h2>JGum Categories</h2> 
   
     The notion of category is a core aspect of the JGum implementation.
-    A <a href="../apidocs/org/jgum/category/Category.html">JGum category</a> is defined by a group of properties shared by the objects belonging to such a category.
+    A <a href="javadocs/org/jgum/category/Category.html">JGum category</a> is defined by a group of properties shared by the objects belonging to such a category.
     Categories can also be defined in terms of other categories, in which case they inherit the properties of their ancestor categories.
     Therefore, categories define parents-children relationships with other categories.
   
-    <p>JGum categories may be associated with an identifying <a href="../apidocs/org/jgum/category/LabeledCategory.html">label</a>. 
+    <p>JGum categories may be associated with an identifying <a href="javadocs/org/jgum/category/LabeledCategory.html">label</a>. 
     According to the chosen categorization, this label may determine the position of the category in a hierarchy (e.g., <a href="#log4j-named-hierarchies">named hierarchies</a>), or just serve as a human aid facilitating reasoning over the category and its extension <sup> <a rel="footnote" href="#fn:categories-matter">4</a> </sup>.
     </p>
   
@@ -201,7 +201,7 @@ jgum.getCategorization("my-categorization"); //retrieving the categorization ide
     <h3>Named Categorizations</h3>
 
     <p>
-    JGum allows to define <a href="../apidocs/org/jgum/category/named/NamedCategory.html">named categorizations</a> that structure their hierarchy according to the naming convention described in our <a rel="footnote" href="#log4j-named-hierarchies">loggers categorization example</a>.
+    JGum allows to define <a href="javadocs/org/jgum/category/named/NamedCategory.html">named categorizations</a> that structure their hierarchy according to the naming convention described in our <a rel="footnote" href="#log4j-named-hierarchies">loggers categorization example</a>.
     This categorization approach can be used to associate properties with Java packages, classes (by means of their fully qualified name) or any artifact following a similar hierarchical naming convention.
     </p>
   
@@ -226,7 +226,7 @@ assertFalse(jgum.forName("org").getProperty(LEVEL).isPresent()); //"level" prope
 
     <h3>Type Categorizations</h3>
 
-    JGum facilitates the creation of <a href="../apidocs/org/jgum/category/type/TypeCategory.html">type categorizations</a> based on the Java class hierarchy. 
+    JGum facilitates the creation of <a href="javadocs/org/jgum/category/type/TypeCategory.html">type categorizations</a> based on the Java class hierarchy. 
     Back to our <a rel="footnote" href="#log4j-type-hierarchies">renderers categorization example</a>, consider the classes <code>Fruit</code>, <code>Orange</code> and <code>FruitRenderer</code> as:
   
     <p><pre data-editor="java" data-show-gutter="true">
@@ -316,7 +316,7 @@ public class Fish extends Animal {}</pre></p>
   
     <p>
     First note that JGum adds the special class <code>Any</code> at the root of the hierarchy.
-    This design decision allows to have a common root for both <a href="../apidocs/org/jgum/category/type/ClassCategory.html">class</a> and <a href="../apidocs/org/jgum/category/type/InterfaceCategory.html">interface</a> type categories and this presents various advantages. One of those is being able to set global properties that are inherited by both class and interface categories in the hierarchy.
+    This design decision allows to have a common root for both <a href="javadocs/org/jgum/category/type/ClassCategory.html">class</a> and <a href="javadocs/org/jgum/category/type/InterfaceCategory.html">interface</a> type categories and this presents various advantages. One of those is being able to set global properties that are inherited by both class and interface categories in the hierarchy.
     </p>
   
     <p>
@@ -511,7 +511,7 @@ animalCategory.setProperty(OBJECT_RENDERER_KEY, new AnimalRenderer()); //ObjectR
 hasLegsCategory.setProperty(OBJECT_RENDERER_KEY, new HasLegsRenderer()); //ObjectRenderer property is an instance of HasLegsRenderer for HasLegs</pre></p>
 
     <p>
-    We can obtain an instance of a strategy by means of the <a href="../apidocs/org/jgum/category/Category.html#getStrategy(java.lang.Class)" title="getStrategy() method">getStrategy()</a> method in the <a href="../apidocs/org/jgum/category/Category.html" title="Category class">Category</a> class.
+    We can obtain an instance of a strategy by means of the <a href="javadocs/org/jgum/category/Category.html#getStrategy(java.lang.Class)" title="getStrategy() method">getStrategy()</a> method in the <a href="javadocs/org/jgum/category/Category.html" title="Category class">Category</a> class.
     The returned strategy is in fact a composition of other strategies (specifically, a chain of responsibility) in the upper hierarchy of a category.
     Note that the class of this strategy is generated at runtime (at the moment, by means of <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/reflect/Proxy.html" title="Dynamic proxies">dynamic proxies</a>). 
     </p>
@@ -526,7 +526,7 @@ ObjectRenderer renderer = catCategory.getStrategy(ObjectRenderer.class);
 assertEquals("animal", renderer.doRender(new Cat()));</pre></p>
 
     <p>
-    Finally, in case a strategy requires to delegate to the next strategy in the chain of responsibility, it just needs to throw a <a href="../apidocs/org/jgum/strategy/NoMyResponsibilityException.html" title="NoMyResponsibilityException class">NoMyResponsibilityException</a> exception.
+    Finally, in case a strategy requires to delegate to the next strategy in the chain of responsibility, it just needs to throw a <a href="javadocs/org/jgum/strategy/NoMyResponsibilityException.html" title="NoMyResponsibilityException class">NoMyResponsibilityException</a> exception.
     If this happens, the next strategy in the chain will be employed. If all the strategies in the chain are exhausted, a <code>NoMyResponsibilityException</code> exception is thrown to the caller.
     </p>
     
@@ -643,7 +643,7 @@ assertEquals("has-legs", renderer.doRender(new Cat()));</pre></p>
   &lt;version&gt;0.0.1-alpha-SNAPSHOT&lt;/version&gt;
 &lt;/dependency&gt;</pre></p>
 
-    You may also find interesting taking a look at the <a href="../apidocs/index.html">JGum API documentation</a>.
+    You may also find interesting taking a look at the <a href="javadocs/index.html">JGum API documentation</a>.
 
   <h2 id="contact">Contact</h2>
   
