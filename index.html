@@ -85,7 +85,7 @@
   
     This section illustrates a typical usage of custom categories in everyday programming by means of reviewing common logging practices using a well known Java library.
   
-    <h3 id="log4j-named-hierarchies">Named Hierarchies</h3>
+    <h3 id="log4j-named-hierarchies">Name Hierarchies</h3>
 
     Popular logging libraries such as <a href="http://logging.apache.org/log4j/1.2/" title="Apache log4j">log4j</a> allow fine-grained control on which kind of logging message (e.g., warning or error) should be processed at runtime.
     This control is enabled since programmers can easily categorize a <q>logging space</q> <sup> <a rel="footnote" href="#fn:apache-manual">3</a> </sup> according to some developer-chosen criteria.
@@ -110,8 +110,8 @@ log4j.logger.org.jcategory=WARN</pre></p>
     
 
     <div class="divImg">
-      <img src="img/log4j_packages.svg" alt="Named category properties." style="padding-bottom:0.5em;" width="268" height="233" />
-      <div id="imglabel:log4j_named_properties" >Fig 1. - A named categorization for loggers.</div>
+      <img src="img/log4j_packages.svg" alt="Name category properties." style="padding-bottom:0.5em;" width="268" height="233" />
+      <div id="imglabel:log4j_named_properties" >Fig 1. - A name categorization for loggers.</div>
     </div>
 
 
@@ -122,7 +122,7 @@ log4j.logger.org.jcategory=WARN</pre></p>
     </p>
   
     <p>
-    This section has illustrated how a popular logging library makes use of named hierarchies to create a categorization of loggers.
+    This section has illustrated how a popular logging library makes use of name hierarchies to create a categorization of loggers.
     The core idea of a name based categorization is to infer hierarchical relationships between labeled categories based on a given naming convention.
     As we will see, JCategory provides high level support for dealing with this categorization pattern.
     </p>
@@ -156,7 +156,7 @@ log4j.logger.org.jcategory=WARN</pre></p>
   
 
     Therefore, this categorization relies on an existing categorization already provided by the language (a hierarchy of classes). 
-    As in the previous categorization based on named hierarchies, JCategory factorizes out this categorization pattern as a general mechanism to associate properties to classes and interfaces.
+    As in the previous categorization based on name hierarchies, JCategory factorizes out this categorization pattern as a general mechanism to associate properties to classes and interfaces.
     As before, this association is limited to the scope of a certain context.
   
 
@@ -177,7 +177,7 @@ context.register("my-categorization", myCategorization); //registering a categor
 context.getCategorization("my-categorization"); //retrieving the categorization identified by "my-categorization"</pre></p>
 
     <p>
-    This context also provides high-level methods to deal with named and type categorizations, as it will be illustrated in the next section. 
+    This context also provides high-level methods to deal with name and type categorizations, as it will be illustrated in the next section. 
     </p>
 
 
@@ -194,29 +194,29 @@ context.getCategorization("my-categorization"); //retrieving the categorization 
   
     <p>
     In addition to offer a framework for creating and maintaining custom hierarchies of categories, JCategory provides special classes and routines for dealing with two common categorization mechanisms.
-    The rest of this section overviews the JCategory support for named and type categorizations.
+    The rest of this section overviews the JCategory support for name and type categorizations.
     </p>
   
   
-    <h3>Named Categorizations</h3>
+    <h3>Name Categorizations</h3>
 
     <p>
-    JCategory allows to define <a href="javadocs/org/jcategory/category/named/NamedCategory.html">named categorizations</a> that structure their hierarchy according to the naming convention described in our <a rel="footnote" href="#log4j-named-hierarchies">loggers categorization example</a>.
+    JCategory allows to define <a href="javadocs/org/jcategory/category/named/NameCategory.html">name categorizations</a> that structure their hierarchy according to the naming convention described in our <a rel="footnote" href="#log4j-named-hierarchies">loggers categorization example</a>.
     This categorization approach can be used to associate properties with Java packages, classes (by means of their fully qualified name) or any artifact following a similar hierarchical naming convention.
     </p>
   
     <p>
-    The example below creates a named categorization with the same properties that our <a rel="footnote" href="#imglabel:log4j_named_properties">logging example</a>.
+    The example below creates a name categorization with the same properties that our <a rel="footnote" href="#imglabel:log4j_named_properties">logging example</a>.
     </p>
 
     <p><pre data-editor="java" data-show-gutter="true">
 final Object LEVEL = "level"; //the property identifier
 JCategory context = new JCategory();
-NameCategory parent = context.forPackage(JCategory.class.getPackage()); //named category for "org.jum"
-NameCategory child = context.forName(JCategory.class.getName()); //named category for "org.jum.JCategory"
-parent.setProperty(LEVEL, "WARN"); //"level" property set to "WARN" for "org.jum"
-assertEquals("WARN", parent.getProperty(LEVEL).get()); //"level" property is "WARN" for "org.jum"
-assertEquals("WARN", child.getProperty(LEVEL).get()); //"level" property is also "WARN" for "org.jum.JCategory"
+NameCategory parent = context.forPackage(JCategory.class.getPackage()); //name category for "org.jcategory"
+NameCategory child = context.forName(JCategory.class.getName()); //name category for "org.jcategory.JCategory"
+parent.setProperty(LEVEL, "WARN"); //"level" property set to "WARN" for "org.jcategory"
+assertEquals("WARN", parent.getProperty(LEVEL).get()); //"level" property is "WARN" for "org.jcategory"
+assertEquals("WARN", child.getProperty(LEVEL).get()); //"level" property is also "WARN" for "org.jcategory.JCategory"
 assertFalse(context.forName("org").getProperty(LEVEL).isPresent()); //"level" property has not been set for "org"</pre></p>
 
     <p>
@@ -436,7 +436,7 @@ JCategory context = new JCategory(linearizationFunction);</pre></p>
   <h2>Ad Hoc Categorizations</h2>
 
     <p>
-    Of course, you can always create simple ad hoc categorizations if you do not care about named and type categorizations.
+    Of course, you can always create simple ad hoc categorizations if you do not care about name and type categorizations.
     For ad hoc categorizations, the default linearization function makes use of a left-first depth-first search. Conflicts are solved keeping the last redundant category in the linearization and dropping the rest.
     </p>
   
@@ -571,9 +571,9 @@ assertEquals("has-legs", renderer.doRender(new Cat()));</pre></p>
 
     This section highlights certain limitations of JCategory. In certain cases, future work directions to overcome these limitations are outlined.
 
-    <h3>Named Categorizations Limitations</h3>
+    <h3>Name Categorizations Limitations</h3>
     <p>
-    JCategory provides support for only one pattern of named categorizations: hierarchies specified by means of category names implicitly containing a list of ancestors using dots as token separator.
+    JCategory provides support for only one pattern of name categorizations: hierarchies specified by means of category names implicitly containing a list of ancestors using dots as token separator.
     However, many other alternatives are possible (e.g., structuring hierarchies based on a numeric pattern present in the name of a category).
     The current mechanism was chosen because it is well known and understood. Other strategies should not be difficult to implement.
     </p>
@@ -611,7 +611,7 @@ assertEquals("has-legs", renderer.doRender(new Cat()));</pre></p>
   
     <h2>Conclusions</h2>
 
-    This tutorial has described a lightweight Java library for creating different kinds of categorizations: 1) named, 2) type and 3) ad hoc categorizations.
+    This tutorial has described a lightweight Java library for creating different kinds of categorizations: 1) name, 2) type and 3) ad hoc categorizations.
   
     <p>
     Not all the JCategory features have been discussed here. Features such as top-down traversing of hierarchies, registration of listeners in categorizations and the description of utility classes facilitating common tasks have been left out for timing constraints. 
