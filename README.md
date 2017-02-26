@@ -1,4 +1,4 @@
-jgum.github.io
+jcategory.github.io
 ==============
 
-[JGum website](http://jgum.github.com/ "JGum website").
+[JCategory website](http://jcategory.github.com/ "JCategory website").
