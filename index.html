@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>JGum User Guide</title>
+<title>JCategory User Guide</title>
 
 	<link rel="stylesheet" href="styles/publication/sc.tutorial.css" />
 
@@ -52,7 +52,7 @@
 
 
 
-<h1>JGum User Guide</h1>
+<h1>JCategory User Guide</h1>
 
 
 <div id="table_of_content">
@@ -66,7 +66,7 @@
   <h2>Overview</h2> 
   
     <p>
-    JGum is a lightweight categorization framework for Java.
+    JCategory is a lightweight categorization framework for Java.
     </p>
   
     <p>
@@ -77,8 +77,8 @@
     Furthermore, a programmer may intend to create or modify the properties of categories in a certain well-scoped context, isolating category properties, or the categories themselves, from the rest of the application.
     </p>
   
-    JGum provides support for defining complex taxonomies of categories into a particular context.
-    With JGum, a programmer can define and manipulate ad hoc categorizations, as well as easily organize categories relying on existing Java categorization mechanisms, such as classes and packages.
+    JCategory provides support for defining complex taxonomies of categories into a particular context.
+    With JCategory, a programmer can define and manipulate ad hoc categorizations, as well as easily organize categories relying on existing Java categorization mechanisms, such as classes and packages.
   
 
   <h2>Having Fun with Categories (or a Short Introduction to <a href="http://logging.apache.org/log4j/1.2/" title="Apache log4j">log4j</a>)</h2>
@@ -90,22 +90,22 @@
     Popular logging libraries such as <a href="http://logging.apache.org/log4j/1.2/" title="Apache log4j">log4j</a> allow fine-grained control on which kind of logging message (e.g., warning or error) should be processed at runtime.
     This control is enabled since programmers can easily categorize a <q>logging space</q> <sup> <a rel="footnote" href="#fn:apache-manual">3</a> </sup> according to some developer-chosen criteria.
   
-    Loggers are organized hierarchically following a naming rule. For example, a logger named <code>"org"</code> is the parent of a logger named <code>"org.jgum"</code>, and the ancestor of a logger named <code>"org.jgum.JGum"</code>.
+    Loggers are organized hierarchically following a naming rule. For example, a logger named <code>"org"</code> is the parent of a logger named <code>"org.jcategory"</code>, and the ancestor of a logger named <code>"org.jcategory.JCategory"</code>.
     If a logger property (e.g., a logging <code>level</code>) is not defined for a given logger, it should be resolved according to the corresponding property value of its parent.
   <p/>
   
-    Loggers are typically defined by means of configuration files. The following fragment of a log4j configuration file configures a logger named <code>org.jgum</code> with the level <code>WARN</code>.
+    Loggers are typically defined by means of configuration files. The following fragment of a log4j configuration file configures a logger named <code>org.jcategory</code> with the level <code>WARN</code>.
   
     <p><pre data-editor="properties" data-show-gutter="true">
-# Set the logger level to WARN for the "org.jgum" logger
-log4j.logger.org.jgum=WARN</pre></p>
+# Set the logger level to WARN for the "org.jcategory" logger
+log4j.logger.org.jcategory=WARN</pre></p>
   
     Although loggers can have any name, a practical convention is to name them according to the fully qualified name of the class where they are used.
-    For example, a logger used in the <code>org.jgum.JGum</code> class may be named <code>"org.jgum.JGum"</code>. Such logger can be instantiated with:
+    For example, a logger used in the <code>org.jcategory.JCategory</code> class may be named <code>"org.jcategory.JCategory"</code>. Such logger can be instantiated with:
  
-    <p><pre data-editor="properties" data-show-gutter="true">Logger jgumLogger = Logger.getLogger(org.jgum.JGum.class); //instantiates a logger named "org.jgum.JGum"</pre></p> 
+    <p><pre data-editor="properties" data-show-gutter="true">Logger jcategoryLogger = Logger.getLogger(org.jcategory.JCategory.class); //instantiates a logger named "org.jcategory.JCategory"</pre></p> 
    
-    Since this logger is a descendant from the <code>"org.jgum"</code> logger defined in the configuration file, it inherits from its parent the <code>level</code> property, set to <code>WARN</code>. 
+    Since this logger is a descendant from the <code>"org.jcategory"</code> logger defined in the configuration file, it inherits from its parent the <code>level</code> property, set to <code>WARN</code>. 
     This is illustrated by the figure below.
     
 
@@ -124,7 +124,7 @@ log4j.logger.org.jgum=WARN</pre></p>
     <p>
     This section has illustrated how a popular logging library makes use of named hierarchies to create a categorization of loggers.
     The core idea of a name based categorization is to infer hierarchical relationships between labeled categories based on a given naming convention.
-    As we will see, JGum provides high level support for dealing with this categorization pattern.
+    As we will see, JCategory provides high level support for dealing with this categorization pattern.
     </p>
    
     <p>
@@ -156,52 +156,52 @@ log4j.logger.org.jgum=WARN</pre></p>
   
 
     Therefore, this categorization relies on an existing categorization already provided by the language (a hierarchy of classes). 
-    As in the previous categorization based on named hierarchies, JGum factorizes out this categorization pattern as a general mechanism to associate properties to classes and interfaces.
+    As in the previous categorization based on named hierarchies, JCategory factorizes out this categorization pattern as a general mechanism to associate properties to classes and interfaces.
     As before, this association is limited to the scope of a certain context.
   
 
-  <h2>The JGum Context</h2>
+  <h2>The JCategory Context</h2>
   
-    JGum allows to create and maintain categorizations associated with a context.
-    A JGum context can be regarded as a register for categorizations and a store of preferences.
-    A default <a href="javadocs/org/jgum/JGum.html">JGum context</a> can be instantiated as follows:
+    JCategory allows to create and maintain categorizations associated with a context.
+    A JCategory context can be regarded as a register for categorizations and a store of preferences.
+    A default <a href="javadocs/org/jcategory/JCategory.html">JCategory context</a> can be instantiated as follows:
 
     <p><pre data-editor="java" data-show-gutter="true">
-JGum jgum = new JGum();</pre></p>
+JCategory context = new JCategory();</pre></p>
 
     Categorizations can be registered and retrieved as follows:
 
     <p><pre data-editor="java" data-show-gutter="true">
 Categorization&lt;CategoryClass&gt; myCategorization = ...;
-jgum.register("my-categorization", myCategorization); //registering a categorization under the identifier "my-categorization"
-jgum.getCategorization("my-categorization"); //retrieving the categorization identified by "my-categorization"</pre></p>
+context.register("my-categorization", myCategorization); //registering a categorization under the identifier "my-categorization"
+context.getCategorization("my-categorization"); //retrieving the categorization identified by "my-categorization"</pre></p>
 
     <p>
     This context also provides high-level methods to deal with named and type categorizations, as it will be illustrated in the next section. 
     </p>
 
 
-  <h2>JGum Categories</h2> 
+  <h2>JCategory Categories</h2> 
   
-    The notion of category is a core aspect of the JGum implementation.
-    A <a href="javadocs/org/jgum/category/Category.html">JGum category</a> is defined by a group of properties shared by the objects belonging to such a category.
+    The notion of category is a core aspect of the JCategory implementation.
+    A <a href="javadocs/org/jcategory/category/Category.html">JCategory category</a> is defined by a group of properties shared by the objects belonging to such a category.
     Categories can also be defined in terms of other categories, in which case they inherit the properties of their ancestor categories.
     Therefore, categories define parents-children relationships with other categories.
   
-    <p>JGum categories may be associated with an identifying <a href="javadocs/org/jgum/category/LabeledCategory.html">label</a>. 
+    <p>JCategory categories may be associated with an identifying <a href="javadocs/org/jcategory/category/LabeledCategory.html">label</a>. 
     According to the chosen categorization, this label may determine the position of the category in a hierarchy (e.g., <a href="#log4j-named-hierarchies">named hierarchies</a>), or just serve as a human aid facilitating reasoning over the category and its extension <sup> <a rel="footnote" href="#fn:categories-matter">4</a> </sup>.
     </p>
   
     <p>
-    In addition to offer a framework for creating and maintaining custom hierarchies of categories, JGum provides special classes and routines for dealing with two common categorization mechanisms.
-    The rest of this section overviews the JGum support for named and type categorizations.
+    In addition to offer a framework for creating and maintaining custom hierarchies of categories, JCategory provides special classes and routines for dealing with two common categorization mechanisms.
+    The rest of this section overviews the JCategory support for named and type categorizations.
     </p>
   
   
     <h3>Named Categorizations</h3>
 
     <p>
-    JGum allows to define <a href="javadocs/org/jgum/category/named/NamedCategory.html">named categorizations</a> that structure their hierarchy according to the naming convention described in our <a rel="footnote" href="#log4j-named-hierarchies">loggers categorization example</a>.
+    JCategory allows to define <a href="javadocs/org/jcategory/category/named/NamedCategory.html">named categorizations</a> that structure their hierarchy according to the naming convention described in our <a rel="footnote" href="#log4j-named-hierarchies">loggers categorization example</a>.
     This categorization approach can be used to associate properties with Java packages, classes (by means of their fully qualified name) or any artifact following a similar hierarchical naming convention.
     </p>
   
@@ -211,22 +211,22 @@ jgum.getCategorization("my-categorization"); //retrieving the categorization ide
 
     <p><pre data-editor="java" data-show-gutter="true">
 final Object LEVEL = "level"; //the property identifier
-JGum jgum = new JGum();
-NamedCategory parent = jgum.forPackage(JGum.class.getPackage()); //named category for "org.jum"
-NamedCategory child = jgum.forName(JGum.class.getName()); //named category for "org.jum.JGum"
+JCategory context = new JCategory();
+NameCategory parent = context.forPackage(JCategory.class.getPackage()); //named category for "org.jum"
+NameCategory child = context.forName(JCategory.class.getName()); //named category for "org.jum.JCategory"
 parent.setProperty(LEVEL, "WARN"); //"level" property set to "WARN" for "org.jum"
 assertEquals("WARN", parent.getProperty(LEVEL).get()); //"level" property is "WARN" for "org.jum"
-assertEquals("WARN", child.getProperty(LEVEL).get()); //"level" property is also "WARN" for "org.jum.JGum"
-assertFalse(jgum.forName("org").getProperty(LEVEL).isPresent()); //"level" property has not been set for "org"</pre></p>
+assertEquals("WARN", child.getProperty(LEVEL).get()); //"level" property is also "WARN" for "org.jum.JCategory"
+assertFalse(context.forName("org").getProperty(LEVEL).isPresent()); //"level" property has not been set for "org"</pre></p>
 
     <p>
-    First we obtain categories corresponding to the names <code>"org.jgum"</code> (line 3) and <code>"org.jgum.JGum"</code> (line 4). We set the <code>level</code> property to <code>WARN</code> in the <code>"org.jgum"</code> category (line 5). We verify that the property is set for both this category (line 6) and a child category that should inherit that property (line 7).
+    First we obtain categories corresponding to the names <code>"org.jcategory"</code> (line 3) and <code>"org.jcategory.JCategory"</code> (line 4). We set the <code>level</code> property to <code>WARN</code> in the <code>"org.jcategory"</code> category (line 5). We verify that the property is set for both this category (line 6) and a child category that should inherit that property (line 7).
     In line 8 we verify that the property is undefined for the category <code>"org"</code>, since it is before in the hierarchy of the only category defining this property.
     </p>
 
     <h3>Type Categorizations</h3>
 
-    JGum facilitates the creation of <a href="javadocs/org/jgum/category/type/TypeCategory.html">type categorizations</a> based on the Java class hierarchy. 
+    JCategory facilitates the creation of <a href="javadocs/org/jcategory/category/type/TypeCategory.html">type categorizations</a> based on the Java class hierarchy. 
     Back to our <a rel="footnote" href="#log4j-type-hierarchies">renderers categorization example</a>, consider the classes <code>Fruit</code>, <code>Orange</code> and <code>FruitRenderer</code> as:
   
     <p><pre data-editor="java" data-show-gutter="true">
@@ -245,13 +245,13 @@ public class FruitRenderer implements ObjectRenderer {
 
     <p><pre data-editor="java" data-show-gutter="true">
 final Object OBJECT_RENDERER_KEY = ObjectRenderer.class; //the property identifier
-JGum jgum = new JGum();
-TypeCategory&lt;Fruit&gt; fruitCategory = jgum.forClass(Fruit.class); //type category for Fruit
-TypeCategory&lt;Orange&gt; orangeCategory = jgum.forClass(Orange.class); //type category for Orange
+JCategory context = new JCategory();
+TypeCategory&lt;Fruit&gt; fruitCategory = context.forClass(Fruit.class); //type category for Fruit
+TypeCategory&lt;Orange&gt; orangeCategory = context.forClass(Orange.class); //type category for Orange
 fruitCategory.setProperty(OBJECT_RENDERER_KEY, FruitRenderer.class); //ObjectRenderer property set to FruitRenderer for Fruit
 assertEquals(FruitRenderer.class, fruitCategory.getProperty(OBJECT_RENDERER_KEY).get()); //ObjectRenderer property is FruitRenderers for Fruit
 assertEquals(FruitRenderer.class, orangeCategory.getProperty(OBJECT_RENDERER_KEY).get()); //ObjectRenderer property is also FruitRenderer for Orange
-assertFalse(jgum.forClass(Object.class).getProperty(OBJECT_RENDERER_KEY).isPresent()); //ObjectRenderer property has not been set for Object</pre></p>
+assertFalse(context.forClass(Object.class).getProperty(OBJECT_RENDERER_KEY).isPresent()); //ObjectRenderer property has not been set for Object</pre></p>
 
     <p>
     First we obtain categories corresponding to the classes <code>Fruit</code> (line 3) and <code>Orange</code> (line 4). 
@@ -286,7 +286,7 @@ assertFalse(jgum.forClass(Object.class).getProperty(OBJECT_RENDERER_KEY).isPrese
 
     Although there are many different alternatives to solve conflicts for ambiguous properties, unfortunately there is not a perfect one-fit-all solution <sup> <a rel="footnote" href="#fn:name-collision">8</a> </sup>.
   
-    The following section illustrates the approach followed by JGum.
+    The following section illustrates the approach followed by JCategory.
   
     <h3>Linearization Functions</h3>
   
@@ -305,7 +305,7 @@ public class Fish extends Animal {}</pre></p>
   
   
     <p>
-    Figure 4 illustrates a JGum type categorization based on this class hierarchy.
+    Figure 4 illustrates a JCategory type categorization based on this class hierarchy.
     </p>
   
 
@@ -315,13 +315,14 @@ public class Fish extends Animal {}</pre></p>
     </div>
   
     <p>
-    First note that JGum adds the special class <code>Any</code> at the root of the hierarchy.
-    This design decision allows to have a common root for both <a href="javadocs/org/jgum/category/type/ClassCategory.html">class</a> and <a href="javadocs/org/jgum/category/type/InterfaceCategory.html">interface</a> type categories and this presents various advantages. One of those is being able to set global properties that are inherited by both class and interface categories in the hierarchy.
+    First note that JCategory adds the special class <code>Any</code> at the root of the hierarchy.
+    This design decision allows to have a common root for both <a href="javadocs/org/jcategory/category/type/ClassCategory.html">class</a> and <a href="javadocs/org/jcategory/category/type/InterfaceCategory.html">interface</a> type categories and this presents various advantages. 
+    One of those is being able to set global properties that are inherited by both class and interface categories in the hierarchy.
     </p>
   
     <p>
 	The figure also illustrates a type-based categorization of renderers according to this class hierarchy (note the <code>renderer</code> property associated to certain classes).
-	Observe that JGum considers, in many aspects, both classes and interfaces as same-level categorization units.
+	Observe that JCategory considers, in many aspects, both classes and interfaces as same-level categorization units.
 	For example, one of the two renderers shown in the figure (<code>AnimalRenderer</code>) is a property of the <code>Animal</code> class.
 	The other (<code>HasLegsRenderer</code>) is a property of the <code>HasLegs</code> interface.
 	In order to associate those renderers with the categories <code>Animal</code> and <code>HasLegs</code>, we can write:
@@ -329,9 +330,9 @@ public class Fish extends Animal {}</pre></p>
 
     <p><pre data-editor="java" data-show-gutter="true">
 final Object OBJECT_RENDERER_KEY = ObjectRenderer.class;
-JGum jgum = new JGum();
-TypeCategory&lt;Animal&gt; animalCategory = jgum.forClass(Animal.class); //type category for Animal
-TypeCategory&lt;HasLegs&gt; hasLegsCategory = jgum.forClass(HasLegs.class); //type category for HasLegs
+JCategory context = new JCategory();
+TypeCategory&lt;Animal&gt; animalCategory = context.forClass(Animal.class); //type category for Animal
+TypeCategory&lt;HasLegs&gt; hasLegsCategory = context.forClass(HasLegs.class); //type category for HasLegs
 animalCategory.setProperty(OBJECT_RENDERER_KEY, AnimalRenderer.class); //setting property ObjectRenderer to AnimalRenderer in Animal
 hasLegsCategory.setProperty(OBJECT_RENDERER_KEY, HasLegsRenderer.class); //setting property ObjectRenderer to HasLegsRenderer in HasLegs</pre></p>
 
@@ -341,7 +342,7 @@ hasLegsCategory.setProperty(OBJECT_RENDERER_KEY, HasLegsRenderer.class); //setti
   
     <p><pre data-editor="java" data-show-gutter="true">
 ...
-TypeCategory&lt;Fish&gt; fishCategory = jgum.forClass(Fish.class); //type category for Fish
+TypeCategory&lt;Fish&gt; fishCategory = context.forClass(Fish.class); //type category for Fish
 assertEquals(AnimalRenderer.class, fishCategory.getProperty(OBJECT_RENDERER_KEY).get()); //ObjectRenderer property is AnimalRenderer for Fish</pre></p>
   
     <p>
@@ -352,11 +353,11 @@ assertEquals(AnimalRenderer.class, fishCategory.getProperty(OBJECT_RENDERER_KEY)
   
     <p>
     Linearization helps to solve this conflict unambiguously defining a lineal order in which (super-)categories should be visited when querying a property.
-    In JGum, linearization is considered a function mapping a category to a list of categories creating a search path.
+    In JCategory, linearization is considered a function mapping a category to a list of categories creating a search path.
     </p>
   
-    The default JGum type linearization function is, to certain extent, inspired by the linearization function used by Scala <sup> <a rel="footnote" href="#fn:scala">11</a> </sup> when solving conflicts between classes and traits.
-    JGum uses a left-first depth-first search, before eliminating all but the last occurrence of each category in the resulting list (the main difference with the Scala algorithm is that the later uses a right-first depth-first search).
+    The default JCategory type linearization function is, to certain extent, inspired by the linearization function used by Scala <sup> <a rel="footnote" href="#fn:scala">11</a> </sup> when solving conflicts between classes and traits.
+    JCategory uses a left-first depth-first search, before eliminating all but the last occurrence of each category in the resulting list (the main difference with the Scala algorithm is that the later uses a right-first depth-first search).
   
     Figure 5 illustrates the resolution order of a property starting from the category <code>Cat</code>.
   
@@ -382,12 +383,12 @@ assertEquals(AnimalRenderer.class, fishCategory.getProperty(OBJECT_RENDERER_KEY)
   
     <p><pre data-editor="java" data-show-gutter="true">
 ...	
-TypeCategory&lt;Cat&gt; catCategory = jgum.forClass(Cat.class); //type category for Cat
+TypeCategory&lt;Cat&gt; catCategory = context.forClass(Cat.class); //type category for Cat
 assertEquals(AnimalRenderer.class, catCategory.getProperty(OBJECT_RENDERER_KEY).get()); //ObjectRenderer property is AnimalRenderer for Cat</pre></p>
 
 
-    Given that a custom linearization function may be not that trivial to implement, JGum provides simple abstractions for creating those functions from a set of parameters.
-    In order to associate a type linearization function with a JGum context we can write:
+    Given that a custom linearization function may be not that trivial to implement, JCategory provides simple abstractions for creating those functions from a set of parameters.
+    In order to associate a type linearization function with a JCategory context we can write:
   
     <p><pre data-editor="java" data-show-gutter="true">
 Function&lt;TypeCategory&lt;?&gt;, List&lt;TypeCategory&lt;?&gt;&gt;&gt; linearizationFunction = 
@@ -396,7 +397,7 @@ Function&lt;TypeCategory&lt;?&gt;, List&lt;TypeCategory&lt;?&gt;&gt;&gt; lineari
 		Priority.CLASSES_FIRST, //look first at classes, then interfaces
 		InterfaceOrder.DECLARATION, //traverse the interfaces from left to right (declaration order)
 		RedundancyCheck.KEEP_LAST); //if a category appears more than once in the linearization, keep the last found and discard the previous ones.
-JGum jgum = new JGum(linearizationFunction);</pre></p>
+JCategory context = new JCategory(linearizationFunction);</pre></p>
 
         
     The previous linearization function is the same as the default linearization function for type categories: left to right search, looking at classes first.
@@ -410,7 +411,7 @@ Function&lt;TypeCategory&lt;?&gt;, List&lt;TypeCategory&lt;?&gt;&gt;&gt; lineari
 		Priority.INTERFACES_FIRST, //look first at interfaces, then classes
 		InterfaceOrder.REVERSE, //traverse the interfaces from right to left (reverse declaration order)
 		RedundancyCheck.KEEP_LAST); //if a category appears more than once in the linearization, keep the last found and discard the previous ones.
-JGum jgum = new JGum(linearizationFunction);</pre></p>
+JCategory context = new JCategory(linearizationFunction);</pre></p>
   
     Figure 6 illustrates the alternative resolution order defined by our custom linearization function.
   
@@ -461,9 +462,9 @@ parent2.setProperty(p2, "x"); //setting property p2 to "x" in parent2
 assertEquals("y", child.getProperty(p1).get()); //p1 property found in parent1
 assertEquals("x", child.getProperty(p2).get()); //p2 property found in parent2
 		
-//optionally registering the previous categorization in a JGum context
-JGum jgum = new JGum();
-jgum.register("my-categorization", mySimpleCategorization);</pre></p>
+//optionally registering the previous categorization in a JCategory context
+JCategory context = new JCategory();
+context.register("my-categorization", mySimpleCategorization);</pre></p>
 
 
 
@@ -471,7 +472,7 @@ jgum.register("my-categorization", mySimpleCategorization);</pre></p>
   
     <p>
     Categories may be associated with strategies. 
-    A JGum strategy is just an object which class implements one or more interfaces.
+    A JCategory strategy is just an object which class implements one or more interfaces.
     Multiple strategies can be located in a categorization, forming an implicit <a href="http://en.wikipedia.org/wiki/Chain-of-responsibility_pattern" title="Chain-of-responsibility pattern">chain of responsibility</a>.
     </p>
 
@@ -500,18 +501,18 @@ public class HasLegsRenderer implements ObjectRenderer {
 
     <p><pre data-editor="java" data-show-gutter="true">
 final Object OBJECT_RENDERER_KEY = ObjectRenderer.class;
-JGum jgum = new JGum();
+JCategory context = new JCategory();
 //instantiating categories
-TypeCategory<Animal> animalCategory = jgum.forClass(Animal.class); //type category for Animal
-TypeCategory<HasLegs> hasLegsCategory = jgum.forClass(HasLegs.class); //type category for HasLegs
-TypeCategory<Cat> catCategory = jgum.forClass(Cat.class); //type category for Cat
+TypeCategory<Animal> animalCategory = context.forClass(Animal.class); //type category for Animal
+TypeCategory<HasLegs> hasLegsCategory = context.forClass(HasLegs.class); //type category for HasLegs
+TypeCategory<Cat> catCategory = context.forClass(Cat.class); //type category for Cat
 		
 //setting properties
 animalCategory.setProperty(OBJECT_RENDERER_KEY, new AnimalRenderer()); //ObjectRenderer property is an instance of AnimalRenderer for Animal
 hasLegsCategory.setProperty(OBJECT_RENDERER_KEY, new HasLegsRenderer()); //ObjectRenderer property is an instance of HasLegsRenderer for HasLegs</pre></p>
 
     <p>
-    We can obtain an instance of a strategy by means of the <a href="javadocs/org/jgum/category/Category.html#getStrategy(java.lang.Class)" title="getStrategy() method">getStrategy()</a> method in the <a href="javadocs/org/jgum/category/Category.html" title="Category class">Category</a> class.
+    We can obtain an instance of a strategy by means of the <a href="javadocs/org/jcategory/category/Category.html#getStrategy(java.lang.Class)" title="getStrategy() method">getStrategy()</a> method in the <a href="javadocs/org/jcategory/category/Category.html" title="Category class">Category</a> class.
     The returned strategy is in fact a composition of other strategies (specifically, a chain of responsibility) in the upper hierarchy of a category.
     Note that the class of this strategy is generated at runtime (at the moment, by means of <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/reflect/Proxy.html" title="Dynamic proxies">dynamic proxies</a>). 
     </p>
@@ -526,7 +527,7 @@ ObjectRenderer renderer = catCategory.getStrategy(ObjectRenderer.class);
 assertEquals("animal", renderer.doRender(new Cat()));</pre></p>
 
     <p>
-    Finally, in case a strategy requires to delegate to the next strategy in the chain of responsibility, it just needs to throw a <a href="javadocs/org/jgum/strategy/NoMyResponsibilityException.html" title="NoMyResponsibilityException class">NoMyResponsibilityException</a> exception.
+    Finally, in case a strategy requires to delegate to the next strategy in the chain of responsibility, it just needs to throw a <a href="javadocs/org/jcategory/strategy/NoMyResponsibilityException.html" title="NoMyResponsibilityException class">NoMyResponsibilityException</a> exception.
     If this happens, the next strategy in the chain will be employed. If all the strategies in the chain are exhausted, a <code>NoMyResponsibilityException</code> exception is thrown to the caller.
     </p>
     
@@ -568,18 +569,18 @@ assertEquals("has-legs", renderer.doRender(new Cat()));</pre></p>
 
   <h2>Limitations and Future Work</h2>
 
-    This section highlights certain limitations of JGum. In certain cases, future work directions to overcome these limitations are outlined.
+    This section highlights certain limitations of JCategory. In certain cases, future work directions to overcome these limitations are outlined.
 
     <h3>Named Categorizations Limitations</h3>
     <p>
-    JGum provides support for only one pattern of named categorizations: hierarchies specified by means of category names implicitly containing a list of ancestors using dots as token separator.
+    JCategory provides support for only one pattern of named categorizations: hierarchies specified by means of category names implicitly containing a list of ancestors using dots as token separator.
     However, many other alternatives are possible (e.g., structuring hierarchies based on a numeric pattern present in the name of a category).
     The current mechanism was chosen because it is well known and understood. Other strategies should not be difficult to implement.
     </p>
   
     <h3>Type Categorizations Limitations</h3>
     <p>
-    JGum type categories currently do not take into consideration implicit reflective properties (e.g., fields and methods declarations) of the wrapped classes that define a type categorization.
+    JCategory type categories currently do not take into consideration implicit reflective properties (e.g., fields and methods declarations) of the wrapped classes that define a type categorization.
     Instead, existing classes are just considered category identifiers and provide a hierarchical organization for type categorizations.
     This may change in the future if a good use-case appears.
     </p>
@@ -591,7 +592,7 @@ assertEquals("has-legs", renderer.doRender(new Cat()));</pre></p>
     </p>
   
     <p>
-    At the moment, there are no plans to implement any of these alternative conflict resolution mechanisms since they are not part of the requirements that motivated the implementation of JGum.
+    At the moment, there are no plans to implement any of these alternative conflict resolution mechanisms since they are not part of the requirements that motivated the implementation of JCategory.
     </p>
   
     <h3>Performance Issues</h3>
@@ -613,37 +614,37 @@ assertEquals("has-legs", renderer.doRender(new Cat()));</pre></p>
     This tutorial has described a lightweight Java library for creating different kinds of categorizations: 1) named, 2) type and 3) ad hoc categorizations.
   
     <p>
-    Not all the JGum features have been discussed here. Features such as top-down traversing of hierarchies, registration of listeners in categorizations and the description of utility classes facilitating common tasks have been left out for timing constraints. 
+    Not all the JCategory features have been discussed here. Features such as top-down traversing of hierarchies, registration of listeners in categorizations and the description of utility classes facilitating common tasks have been left out for timing constraints. 
     </p>
-    Particularly, top-down search has interesting applications. For example, with JGum it is easy to find, given a type categorization, the first implementor of an interface (say using breadth-first search) that has certain desired characteristics (e.g., it is associated with a particular JGum property). This feature may be described in the next version of this tutorial.
+    Particularly, top-down search has interesting applications. For example, with JCategory it is easy to find, given a type categorization, the first implementor of an interface (say using breadth-first search) that has certain desired characteristics (e.g., it is associated with a particular JCategory property). This feature may be described in the next version of this tutorial.
   
     <p>
-    If you are interested to learn more about such features, or would like to know how to extend JGum to support other user-defined categorizations, please <a href="#contact" title="Contact the author">contact</a> the author.
+    If you are interested to learn more about such features, or would like to know how to extend JCategory to support other user-defined categorizations, please <a href="#contact" title="Contact the author">contact</a> the author.
     </p>
   
   
   <h2>License</h2>
 
-  JGum is open source, distributed under the terms of this <a href="https://github.com/jgum/jgum/blob/master/LICENSE.txt" title="License">license</a>.
+  JCategory is open source, distributed under the terms of this <a href="https://github.com/jcategory/jcategory/blob/master/LICENSE.txt" title="License">license</a>.
   
   
   <h2>Try it !</h2>
     
     <p>
-    JGum sources are available at <a href="https://github.com/jgum/jgum" title="JGum at GitHub">GitHub</a>.
+    JCategory sources are available at <a href="https://github.com/jcategory/jcategory" title="JCategory at GitHub">GitHub</a>.
     </p>
     <p>
-    In case you are using Maven, it is also available at the <a href="http://search.maven.org/#search%7Cga%7C1%7Cjgum" title="JGum at the Maven Central repository">Maven Central repository</a>. Just add this dependency to your POM to include JGum into your project.
+    In case you are using Maven, it is also available at the <a href="http://search.maven.org/#search%7Cga%7C1%jcategory" title="JCategory at the Maven Central repository">Maven Central repository</a>. Just add this dependency to your POM to include JCategory into your project.
     </p>
     
     <p><pre data-editor="xml" data-show-gutter="true">
 &lt;dependency&gt;
-  &lt;groupId&gt;com.github.jgum&lt;/groupId&gt;
-  &lt;artifactId&gt;jgum&lt;/artifactId&gt;
+  &lt;groupId&gt;com.github.jcategory&lt;/groupId&gt;
+  &lt;artifactId&gt;jcategory&lt;/artifactId&gt;
   &lt;version&gt;0.0.1&lt;/version&gt;
 &lt;/dependency&gt;</pre></p>
 
-    You may also find interesting taking a look at the <a href="javadocs/index.html">JGum API documentation</a>.
+    You may also find interesting taking a look at the <a href="javadocs/index.html">JCategory API documentation</a>.
 
   <h2 id="contact">Contact</h2>
   
